@@ -1,2 +1,0 @@
-# bomb
-bomba arduino airsoft

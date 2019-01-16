@@ -1,10 +1,15 @@
+void dommination(){
+}
+
 int game(){
   unsigned long reloj = RELOJ;
+  String pass = "";
   drawEmptyProgressBar();
   while(!ENDGAME){
     counter(reloj);
+    buzzing();
     percentageBomb(reloj);
-    if(readChar() && PASS == pass){
+    if(readChar(pass) && PASS == pass){
       ENDGAME = true;
       WIN =true;
     }
@@ -40,6 +45,7 @@ void counter(unsigned long &reloj){
     TIME = time;
     reloj--;
     showTime(reloj);
+    tone(BUZZPIN, 2400, 10);
   }
   if(reloj == 0) ENDGAME = true;
 }
@@ -88,5 +94,56 @@ void drawEmptyProgressBar(){
     lcd.setCursor(i, 3);
     lcd.write(1);
   }
+}
+
+void showTime(unsigned long t){
+  int h = t/360000;
+  int m = ((t/100)%3600)/60;
+  int s = ((t/100)%3600)%60;
+  int cs = t%100;
+/*  lcd.clear();
+  lcd.print(h);
+  lcd.print(":");
+  lcd.print(m);
+  lcd.print(":");
+  lcd.print(s);
+  lcd.print(":");
+  lcd.print(cs);*/
+  
+  ld.write(8, NUM[(int)h/10] );
+  ld.write(7, NUM[(int)h%10] + (POINT /** (cs / 10 % 2)*/));
+  ld.write(6, NUM[(int)m/10] );
+  ld.write(5, NUM[(int)m%10] + (POINT /** (cs / 10 % 2)*/));
+  ld.write(4, NUM[(int)s/10] );
+  ld.write(3, NUM[(int)s%10] + (POINT /** (cs / 10 % 2)*/));
+  ld.write(2, NUM[(int)cs/10] );
+  ld.write(1, NUM[(int)cs%10] );
+  
+  if(millis()/500%2) ld.setBright(1);
+  else ld.setBright(15);
+}
+
+
+bool readChar(String p){
+  char key = keypad.getKey();
+  if(key){
+    switch(key){
+      case '#':
+        return true;
+        break;
+      case '*':
+        p = "";
+        break;
+      default:
+        p += key;
+        break;
+    }
+  }
+  return false;
+}
+
+unsigned long timeBuzzing = millis();
+void buzzing(){
+  //if(millis()/1000%2) tone(BUZZPIN, 2400, 10);
 }
 
