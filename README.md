@@ -1,6 +1,4 @@
-# Bomba-arduino-para-simulacion-airsoft
-bomba arduino airsoft
-
+# Bomba arduino para simulacion airsoft
 
 - Menu
 	- 1.Iniciar juego
