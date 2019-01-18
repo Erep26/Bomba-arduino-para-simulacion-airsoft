@@ -48,7 +48,7 @@
 			- ##### Alarma explosion
 			- ##### Granada explosion
 
-# I2C pins
+# I2C pins (LCD)
 | MODELO | SDA | SCK |
 | --- | --- | --- |
 | Uno | A4 | A5 |
