@@ -55,3 +55,12 @@
 | Nano | A4 | A5 |
 | Mini Pro | A4 | A5 |
 | Mega     | 20  | 21  |
+
+# MFR522 pins
+| Signal | MFRC522 | Arduino Uno | Arduino Mega | Arduino Nano v3 | Arduino Leonardo/Micro | Arduino Pro Micro |
+| --- | --- | --- | --- | --- | --- | --- |
+| RST/Reset | RST | 9 | 5 | D9 | RESET/ICSP-5 | RST |
+| SPI SS | SDA(SS) | 10 | 53 | D10 | 10 | 10 |
+| SPI MOSI | MOSI | 11 / ICSP-4 | 51 | D11 | ICSP-4 | 16 |
+| SPI MISO | MISO | 12 / ICSP-1 | 50 | D12 | ICSP-1 | 14 |
+| SPI SCK | SCK | 13 / ICSP-3 | 52 | D13 | ICSP-3 | 15 |
