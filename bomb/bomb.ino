@@ -1,3 +1,5 @@
+#include <SPI.h>
+#include <MFRC522.h>
 #include <DigitLedDisplay.h>
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
