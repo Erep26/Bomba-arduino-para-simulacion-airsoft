@@ -9,13 +9,12 @@ int game(){
     counter(reloj);
     buzzing();
     percentageBomb(reloj);
-    if(readChar(pass) && PASS == pass){
+    if(reloj == 0) ENDGAME = true;
+    if(bPASS && readChar(pass) && PASS == pass){
       ENDGAME = true;
       WIN =true;
     }
   }
-
-  keypad.setHoldTime(5000);
 /*
   lcd.clear();
   lcd.setCursor(0, 1);
@@ -24,30 +23,31 @@ int game(){
   lcd.print("para resetear");
   lcd.setCursor(0, 3);
   lcd.print("el dispositivo");*/
-  
-  while(ENDGAME){//fin juego
-    if(WIN){
-      lcd.setCursor(0, 0);
+    
+  if(WIN){
+      lcd.setCursor(3, 2);
       lcd.print("Bomba desactivada");
-    }
-    else{
-      lcd.setCursor(0, 0);
-      lcd.print("La bomba a explotado");
-    }
-    char key = keypad.getKey();
-    if(keypad.getState() == HOLD && key == '*') while(1)lcd.clear();
   }
+  else{
+      lcd.setCursor(5, 2);
+      lcd.print("Bomba explotada");
+  }
+  
+    lcd.setCursor(0, 0);
+    lcd.print("Pulsa * para volver");
+    lcd.setCursor(0, 1);
+    lcd.print("al menu principal");
+  while(keypad.waitForKey() != '*');
 }
 
+
 void counter(unsigned long &reloj){
-  int time = millis();
+  unsigned long time = millis();
   if(time - TIME >= 10){
     TIME = time;
-    reloj--;
+    reloj-=10;
     showTime(reloj);
-    tone(BUZZPIN, 2400, 10);
   }
-  if(reloj == 0) ENDGAME = true;
 }
 
 void percentageBomb(unsigned long reloj){
@@ -70,8 +70,11 @@ void percentageBomb(unsigned long reloj){
   {
     lcd.setCursor(i-1, 3);
     if(i == 1) lcd.write(3);
-    if(i > 1 && i < 20) lcd.write(5);
-    if(i == 20) lcd.write(6);
+    if(i > 1) lcd.write(5);
+  }
+  if(reloj == 0){
+    lcd.setCursor(19, 3);
+    lcd.write(6);
   }
 }
 
@@ -124,7 +127,7 @@ void showTime(unsigned long t){
 }
 
 
-bool readChar(String p){
+bool readChar(String &p){
   char key = keypad.getKey();
   if(key){
     switch(key){
@@ -142,8 +145,11 @@ bool readChar(String p){
   return false;
 }
 
-unsigned long timeBuzzing = millis();
+unsigned long TIMEBUZZING = millis();
 void buzzing(){
-  //if(millis()/1000%2) tone(BUZZPIN, 2400, 10);
+  int timeBuzzing = millis();
+  if(TIMEBUZZING - timeBuzzing >= 1000){
+    TIMEBUZZING = timeBuzzing;
+    tone(BUZZPIN, 220, 100);
+  }
 }
-

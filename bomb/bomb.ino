@@ -4,25 +4,49 @@
 #include <Keypad.h>
 
 //I2C pins
-#define DIN 8
-#define LOAD 9
-#define CLK 10
+#define DIN 11
+#define LOAD 10
+#define CLK 9
 
-#define BUZZPIN 13
+#define BUZZPIN 2
+#define ALARMPIN 12
 
-#define RESET_PIN 3
+//KEYPINS
+// ROWS
+#define KEY0 A8
+#define KEY1 A9
+#define KEY2 A10
+#define KEY3 A11
+// COLUMNS
+#define KEY4 A12
+#define KEY5 A13
+#define KEY6 A14
+#define KEY7 A15
+
+//Pines de los cables
+#define WIRE1 1
+#define WIRE2 2
+#define WIRE3 3
+#define WIRE4 4
+
 DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
 
 //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
 const byte POINT = B10000000;
 const byte NUM[] = {B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,B01111111,B01111011};
 
+bool bPASS = true;
 String PASS = "123ABC";
+
+bool bWIRE = false;
+int tWIRE1 = 2;
+int tWIRE2 = 3;
+int tWIRE3 = 3;
+int tWIRE4 = 3;
 
 bool ENDGAME = false;
 bool WIN = false;
-unsigned long RELOJ = 3000;//5 min en centesimas
-
+unsigned long RELOJ = 30000;//5 min en centesimas
  
 const byte rowsCount = 4;
 const byte columsCount = 4;
@@ -34,8 +58,8 @@ char keys[rowsCount][columsCount] = {
    { '*','0','#', 'D' }
 };
 
-byte rowPins[rowsCount] = { 0, 1, 2, 3 };
-byte columnPins[columsCount] = { 4, 5, 6, 7 };
+byte rowPins[rowsCount] = { KEY0, KEY1, KEY2, KEY3 };
+byte columnPins[columsCount] = { KEY4, KEY5, KEY6, KEY7 };
  
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
  
@@ -49,18 +73,28 @@ void setup() {
   lcd.init();
   lcd.backlight();
   
-  ld.setBright(15); //1-15
+  
   ld.setDigitLimit(8);//8 digitos
 
-  pinMode(RESET_PIN, OUTPUT);
   pinMode(BUZZPIN, OUTPUT);
-  digitalWrite(BUZZPIN, LOW);
+  pinMode(WIRE1, INPUT);
+  pinMode(WIRE2, INPUT);
+  pinMode(WIRE3, INPUT);
+  pinMode(WIRE4, INPUT);
+  
   //readSequence();
+}
+
+void setup2(){
+  ld.setBright(15); //1-15
+  digitalWrite(BUZZPIN, LOW);
   showTime(RELOJ);
+  ENDGAME = false;
+  WIN =false;
 }
 
 void loop() {
-  menu();
-  
-  //digitalWrite(RESET_PIN, LOW);
+  setup2();
+  while(!ENDGAME)
+    menu();
 }
