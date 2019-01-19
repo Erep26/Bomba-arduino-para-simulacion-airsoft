@@ -74,8 +74,6 @@ void setup() {
   //Serial.begin(9600);
   lcd.init();
   lcd.backlight();
-  
-  
   ld.setDigitLimit(8);//8 digitos
 
   pinMode(BUZZPIN, OUTPUT);

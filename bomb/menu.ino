@@ -4,7 +4,7 @@ int menu(){
   String MENU2[] = {"1.-Tiempo", "2.-Seleccion juegos", "3.Bomba armada", "4.Otras opciones"};
   String MENU22[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC"};
 
-  String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a:"), String(PASS)};
+  String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a"), String(PASS)};
   
   printMenu(MENU,3);
   drawBomb(17, 0);
@@ -42,8 +42,10 @@ int menu(){
           opt = validOption(0, 3);
           if(opt == 1){ // 1.-Contraseña
             while(opt != 0){
-              printMenu(MENU221,4);
+              printMenu(MENU221,3);
               printYesNo(bPASS,1);
+              lcd.setCursor(0, 3);
+              lcd.print(PASS);
               opt = validOption(0, 2);
               if(opt == 1) bPASS = !bPASS;
               else if(opt == 2) newPass();
@@ -200,24 +202,51 @@ void printYesNo(bool yn, int fil){
   lcd.write(1);
 }
 
+/*
+void printNum(int num){
+  byte _1[] = { 0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E, 0x1F};
+  byte _2[] = { 0x0E, 0x11, 0x01, 0x02, 0x04, 0x08, 0x1F, 0x1F};
+  byte _3[] = { 0x1F, 0x02, 0x04, 0x02, 0x01, 0x11, 0x0E, 0x1F};
+  byte _4[] = { 0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02, 0x1F};
+  switch(num){
+    case 1:
+      lcd.createChar(0, _1);
+      lcd.setCursor();
+      break;
+    case 2:
+      lcd.createChar(0, _2);
+      lcd.setCursor();
+      break;
+    case 3:
+      lcd.createChar(0, _3);
+      lcd.setCursor();
+      break;
+    case 4:
+      lcd.createChar(0, _4);
+      lcd.setCursor();
+      break;
+  }
+  lcd.write(0);
+}*/
+
 void newPass(){
   lcdBorra(0, 3, 19, 3);
-  PASS = "";
+  char auxPass[20];
   char key;
-  for(int i = 0; i < 20; i++){
+  int i = 0;
+  do{
     key = keypad.waitForKey();
-    if(key == '*' && i > 0){
-      i--;
-      lcd.setCursor(i, 3);
-      lcd.print(" ");
+    if(key == '*' && i != 0) i--;
+    else if(key != '#' && key != '*'){
+      auxPass[i] = key;
+      i++;
     }
-    else if(key == '#'){
-      PASS[i] = '\0';
-      i = 20;
+    lcdBorra(0,3,19,3);
+    for(int i2 = 0; i2 < i; i2++){
+      lcd.setCursor(i2, 3);
+      lcd.print(auxPass[i2]);
     }
-    else{
-      PASS += key;
-    }
-  }
+  }while(key != '#' && i < 20);
+  if(i == 0) PASS = "";
+  else PASS = String(auxPass).substring(0, i);
 }
-
