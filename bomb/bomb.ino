@@ -5,7 +5,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 
-//I2C pins
+//Digit led display pins
 #define DIN 11
 #define LOAD 10
 #define CLK 9
@@ -31,20 +31,23 @@
 #define WIRE3 3
 #define WIRE4 4
 
+//Pines botones
+#define RED_BTN 7
+#define GREEN_BTN 8
+
 DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
 
 //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
 const byte POINT = B10000000;
 const byte NUM[] = {B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,B01111111,B01111011};
 
+bool DOMAIN[2] = {false, false};
+
 bool bPASS = true;
 String PASS = "123ABC";
 
 bool bWIRE = false;
-int tWIRE1 = 2;
-int tWIRE2 = 3;
-int tWIRE3 = 3;
-int tWIRE4 = 3;
+int tWIRE[4] = {2, 3, 3, 3};
 
 bool ENDGAME = false;
 bool WIN = false;
@@ -76,18 +79,22 @@ void setup() {
   lcd.backlight();
   ld.setDigitLimit(8);//8 digitos
 
+  pinMode(ALARMPIN, OUTPUT);
   pinMode(BUZZPIN, OUTPUT);
-  pinMode(WIRE1, INPUT);
-  pinMode(WIRE2, INPUT);
-  pinMode(WIRE3, INPUT);
-  pinMode(WIRE4, INPUT);
-  
+  pinMode(WIRE1, INPUT_PULLUP);
+  pinMode(WIRE2, INPUT_PULLUP);
+  pinMode(WIRE3, INPUT_PULLUP);
+  pinMode(WIRE4, INPUT_PULLUP);
+  pinMode(RED_BTN, INPUT_PULLUP);
+  pinMode(GREEN_BTN, INPUT_PULLUP);
+
   //readSequence();
 }
 
 void setup2(){
   ld.setBright(15); //1-15
   digitalWrite(BUZZPIN, LOW);
+  digitalWrite(ALARMPIN, LOW);
   showTime(RELOJ);
   ENDGAME = false;
   WIN =false;

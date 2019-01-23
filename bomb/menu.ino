@@ -1,10 +1,11 @@
 int menu(){
   String MENU[] = {"Menu","1.-Iniciar juego","2.-Configuracion"};
   String MENU1[] = {"Modos de juego","1.-Bomba","2.-Dominacion"};
-  String MENU2[] = {"1.-Tiempo", "2.-Seleccion juegos", "3.Bomba armada", "4.Otras opciones"};
+  String MENU2[] = {"1.-Tiempo", "2.-Seleccion juegos", "3.-Bomba armada", "4.-Otras opciones"};
   String MENU22[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC"};
-
-  String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a"), String(PASS)};
+  String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a")};
+  String MENU222[] = {"5.-Si/No", "Funcion cable", "1.-C1 =    2.-C2 =  ", "3.-C3 =    4.-C4 ="};
+  String MENU22T[] = {"1.-Reducir tiempo", "2.-Parar bomba", "3.-No hacer nada", "4.-Explotar"};
   
   printMenu(MENU,3);
   drawBomb(17, 0);
@@ -37,7 +38,7 @@ int menu(){
         readTime();
       }
       else if(opt == 2){ //2.-Seleccion juegos
-        while(opt != 0){ //4.-Volver
+        while(opt != 0){ //0.-Volver
           printMenu(MENU22,3);
           opt = validOption(0, 3);
           if(opt == 1){ // 1.-Contraseña
@@ -53,7 +54,26 @@ int menu(){
             opt = -1;
           }
           else if(opt == 2){ //2.-Cables
-            
+            while(opt != 0){ //0.-Volver
+              printMenu(MENU222,4);
+              printYesNo(bWIRE,0);
+              lcd.setCursor(8,2);
+              lcd.print(tWIRE[0]);
+              lcd.setCursor(19,2);
+              lcd.print(tWIRE[1]);
+              lcd.setCursor(8,3);
+              lcd.print(tWIRE[2]);
+              lcd.setCursor(19,3);
+              lcd.print(tWIRE[3]);
+              
+              opt = validOption(0, 5);
+              if(opt == 5) bWIRE = !bWIRE;
+              else if(opt != 0){
+                printMenu(MENU22T, 4);
+                int opt2 = validOption(1, 4);
+                tWIRE[opt-1] = opt2;
+              }
+            }
           }
           else if(opt == 3){ //3.-Llaves NFC
             

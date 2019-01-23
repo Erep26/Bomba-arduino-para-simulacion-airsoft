@@ -1,10 +1,20 @@
 void dommination(){
+  unsigned long reloj = RELOJ;
+  while(!ENDGAME){
+    counter(reloj);
+    percentageBomb(reloj);
+    if(reloj == 0) ENDGAME = true;
+  }
 }
 
 int game(){
   unsigned long reloj = RELOJ;
   String pass = "";
   drawEmptyProgressBar();
+  if(bPASS){
+    lcd.setCursor(0,0);
+    lcd.print(String("Introduce ") + String("Contrase") + (char)0xEE + String("a:"));
+  }
   while(!ENDGAME){
     counter(reloj);
     buzzing();
@@ -31,6 +41,7 @@ int game(){
   else{
       lcd.setCursor(5, 2);
       lcd.print("Bomba explotada");
+      digitalWrite(ALARMPIN, HIGH);
   }
   
     lcd.setCursor(0, 0);
@@ -136,9 +147,13 @@ bool readChar(String &p){
         break;
       case '*':
         p = "";
+        lcdBorra(0,1,19,1);
         break;
       default:
         p += key;
+        lcdBorra(0,1,19,1);
+        lcd.setCursor(0,1);
+        for(int i = 0; i < p.length(); i++) lcd.print('*');
         break;
     }
   }
