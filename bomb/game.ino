@@ -1,10 +1,32 @@
+unsigned long TIME_PUNTUA = millis();
+void puntua(unsigned long nteam) {
+  unsigned long time = millis();
+  if (time - TIME_PUNTUA >= 10) {
+    TIME_PUNTUA = time;
+    nteam += 10;
+  }
+}
+
 void dommination() {
-  unsigned long reloj = RELOJ;
+  unsigned long reloj = RELOJ,
+                team1 = 0,
+                team2 = 0;
   while (!ENDGAME) {
     counter(reloj);
+    buzzing();
     percentageBomb(reloj);
+    if (DOMAIN[0]) puntua(team1);
+    if (DOMAIN[1]) puntua(team2);
     if (reloj == 0) ENDGAME = true;
   }
+  if (team1 > team2) { //gana equipo 1
+
+  }
+  else if (team1 < team2) { //gana equipo 2
+
+  }
+  else; //empate
+  alarm();
 }
 
 void printGames(bool bp, bool bw, bool bk) {
@@ -44,7 +66,8 @@ int game() {
     counter(reloj);
     buzzing();
     percentageBomb(reloj);
-    if (reloj >= 0) {
+
+    if (reloj <= 0) {
       ENDGAME = true;
       reloj = 0;
     }
@@ -61,45 +84,33 @@ int game() {
     if (bw) {
       if (digitalRead(WIRE1) && !CUTTED_WIRE[0]) {
         CUTTED_WIRE[0] = true;
-        if (checkWire(tWIRE[0], reloj) && !bp && !bk) {
-          ENDGAME = true;
-          WIN = true;
-          bw = false;
-        }
+        if (checkWire(tWIRE[0], reloj)) bw = false;
         else printGames(bp, bw, bk);
       }
       if (digitalRead(WIRE2) && !CUTTED_WIRE[1]) {
         CUTTED_WIRE[1] = true;
-        if (checkWire(tWIRE[1], reloj) && !bp && !bk) {
-          ENDGAME = true;
-          WIN = true;
-          bw = false;
-        }
+        if (checkWire(tWIRE[1], reloj)) bw = false;
         else printGames(bp, bw, bk);
       }
       if (digitalRead(WIRE3) && !CUTTED_WIRE[2]) {
         CUTTED_WIRE[2] = true;
-        if (checkWire(tWIRE[2], reloj) && !bp && !bk) {
-          ENDGAME = true;
-          WIN = true;
-          bw = false;
-        }
+        if (checkWire(tWIRE[2], reloj)) bw = false;
         else printGames(bp, bw, bk);
       }
       if (digitalRead(WIRE4) && !CUTTED_WIRE[3]) {
         CUTTED_WIRE[3] = true;
-        if (checkWire(tWIRE[3], reloj) && !bp && !bk) {
-          ENDGAME = true;
-          WIN = true;
-          bw = false;
-        }
+        if (checkWire(tWIRE[3], reloj)) bw = false;
         else printGames(bp, bw, bk);
       }
-
     }
 
     if (bk) {
 
+    }
+
+    if (!bp && !bw && !bk) {
+      ENDGAME = true;
+      WIN = true;
     }
 
   }
@@ -119,7 +130,7 @@ int game() {
   else {
     lcd.setCursor(5, 2);
     lcd.print("Bomba explotada");
-    digitalWrite(ALARMPIN, HIGH);
+    alarm();
   }
 
   lcd.setCursor(0, 0);
@@ -129,11 +140,11 @@ int game() {
   while (keypad.waitForKey() != '*');
 }
 
-
+unsigned long TIME_COUNTER = millis();
 void counter(unsigned long &reloj) {
   unsigned long time = millis();
-  if (time - TIME >= 10) {
-    TIME = time;
+  if (time - TIME_COUNTER >= 10) {
+    TIME_COUNTER = time;
     reloj -= 10;
     showTime(reloj);
   }
@@ -189,6 +200,9 @@ void drawEmptyProgressBar() {
 }
 
 void showTime(unsigned long t) {
+  //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
+  const byte POINT = B10000000;
+  const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
   int h = t / 360000;
   int m = ((t / 100) % 3600) / 60;
   int s = ((t / 100) % 3600) % 60;
@@ -238,11 +252,23 @@ bool readChar(String &p) {
   return false;
 }
 
-unsigned long TIMEBUZZING = millis();
+unsigned long TIME_BUZZING = millis();
 void buzzing() {
-  int timeBuzzing = millis();
-  if (TIMEBUZZING - timeBuzzing >= 1000) {
-    TIMEBUZZING = timeBuzzing;
-    tone(BUZZPIN, 220, 100);
+  if (bBUZZ) {
+    unsigned long time = millis();
+    if (time - TIME_BUZZING >= 1000) {
+      TIME_BUZZING = time;
+      tone(BUZZPIN, 220, 100);
+    }
   }
+}
+
+void alarm() {
+  if (bALARM) digitalWrite(ALARMPIN, HIGH);
+}
+
+void grenade() {
+  if (bGRENADE) digitalWrite(GRENADEPIN, HIGH);
+  delay(1000);
+  digitalWrite(GRENADEPIN, LOW);
 }

@@ -10,20 +10,21 @@
 #define LOAD 10
 #define CLK 9
 
-#define BUZZPIN 2
+#define BUZZPIN A15
 #define ALARMPIN 12
+#define GRENADEPIN 13
 
 //KEYPINS
 // ROWS
-#define KEY0 A8
-#define KEY1 A9
-#define KEY2 A10
-#define KEY3 A11
+#define KEY0 A0
+#define KEY1 A1
+#define KEY2 A2
+#define KEY3 A3
 // COLUMNS
-#define KEY4 A12
-#define KEY5 A13
-#define KEY6 A14
-#define KEY7 A15
+#define KEY4 A4
+#define KEY5 A5
+#define KEY6 A6
+#define KEY7 A7
 
 //Pines de los cables
 #define WIRE1 1
@@ -35,9 +36,9 @@
 #define RED_BTN 7
 #define GREEN_BTN 8
 
-//const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
-const byte POINT = B10000000;
-const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
+bool bBUZZ = true;
+bool bALARM = true;
+bool bGRENADE = true;
 
 bool DOMAIN[2] = {false, false};
 
@@ -69,8 +70,6 @@ DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-unsigned long TIME = millis();
-
 void setup() {
   //Serial.begin(9600);
   lcd.init();
@@ -85,14 +84,13 @@ void setup() {
   pinMode(WIRE4, INPUT_PULLUP);
   pinMode(RED_BTN, INPUT_PULLUP);
   pinMode(GREEN_BTN, INPUT_PULLUP);
-
-  //readSequence();
 }
 
 void setup2() {
   ld.setBright(15); //1-15
   digitalWrite(BUZZPIN, LOW);
   digitalWrite(ALARMPIN, LOW);
+  digitalWrite(GRENADEPIN, LOW);
   showTime(RELOJ);
   ENDGAME = false;
   WIN = false;
@@ -107,3 +105,5 @@ void loop() {
   while (!ENDGAME)
     menu();
 }
+
+

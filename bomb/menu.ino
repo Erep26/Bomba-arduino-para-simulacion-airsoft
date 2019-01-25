@@ -3,6 +3,7 @@ int menu() {
   String MENU1[] = {"Modos de juego", "1.-Bomba", "2.-Dominacion"};
   String MENU2[] = {"1.-Tiempo", "2.-Seleccion juegos", "3.-Bomba armada", "4.-Otras opciones"};
   String MENU22[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC"};
+  String MENU24[] = {"1.-Sonido", "2.-Alarma", "3.-Granada"};
   String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a")};
   String MENU222[] = {"5.-Si/No", "Funcion cable", "1.-C1 =    2.-C2 =  ", "3.-C3 =    4.-C4 ="};
   String MENU22T[] = {"1.-Reducir tiempo", "2.-Parar bomba", "3.-No hacer nada", "4.-Explotar"};
@@ -85,6 +86,17 @@ int menu() {
       else if (opt == 3) { //3.Bomba armada
       }
       else if (opt == 4) { //4.Otras opciones
+        while(opt != 0){
+          printMenu(MENU24, 3);
+          check(MENU24[0].length() +1, 0, bBUZZ);
+          check(MENU24[1].length() +1, 1, bALARM);
+          check(MENU24[2].length() +1, 2, bGRENADE);
+          opt = validOption(0, 4);
+          if(opt == 1) bBUZZ = !bBUZZ;
+          if(opt == 2) bALARM = !bALARM;
+          if(opt == 3) bGRENADE = !bGRENADE;
+        }
+        opt = -1;
       }
     }
     opt = -1;
@@ -151,6 +163,9 @@ void lcdBorra(int col, int fil, int endCol, int endFil) {
 }
 
 void readTime() {
+  //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
+  const byte POINT = B10000000;
+  const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
   unsigned long h, m, s, cs;
   lcdBorra(0, 1, 16, 3);
   lcd.setCursor(0, 1);
@@ -223,33 +238,6 @@ void printYesNo(bool yn, int fil) {
   lcd.write(1);
 }
 
-/*
-  void printNum(int num){
-  byte _1[] = { 0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E, 0x1F};
-  byte _2[] = { 0x0E, 0x11, 0x01, 0x02, 0x04, 0x08, 0x1F, 0x1F};
-  byte _3[] = { 0x1F, 0x02, 0x04, 0x02, 0x01, 0x11, 0x0E, 0x1F};
-  byte _4[] = { 0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02, 0x1F};
-  switch(num){
-    case 1:
-      lcd.createChar(0, _1);
-      lcd.setCursor();
-      break;
-    case 2:
-      lcd.createChar(0, _2);
-      lcd.setCursor();
-      break;
-    case 3:
-      lcd.createChar(0, _3);
-      lcd.setCursor();
-      break;
-    case 4:
-      lcd.createChar(0, _4);
-      lcd.setCursor();
-      break;
-  }
-  lcd.write(0);
-  }*/
-
 void newPass() {
   lcdBorra(0, 3, 19, 3);
   char auxPass[20];
@@ -271,3 +259,13 @@ void newPass() {
   if (i == 0) PASS = "";
   else PASS = String(auxPass).substring(0, i);
 }
+
+void check(int col, int fil , bool yesno){
+  byte noCheck[] = {0x00, 0x1F, 0x11, 0x11, 0x11, 0x1F, 0x00, 0x00};
+  byte yesCheck[] = {0x00, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x00, 0x00};
+  lcd.createChar(0, noCheck);
+  lcd.createChar(1, yesCheck);
+  lcd.setCursor(col, fil);
+  lcd.write((int)yesno);
+}
+
