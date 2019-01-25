@@ -1,7 +1,7 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <DigitLedDisplay.h>
-#include <Wire.h> 
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 
@@ -35,11 +35,9 @@
 #define RED_BTN 7
 #define GREEN_BTN 8
 
-DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
-
 //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
 const byte POINT = B10000000;
-const byte NUM[] = {B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,B01111111,B01111011};
+const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
 
 bool DOMAIN[2] = {false, false};
 
@@ -47,29 +45,29 @@ bool bPASS = true;
 String PASS = "123ABC";
 
 bool bWIRE = false;
+bool CUTTED_WIRE[4] = {false, false, false, false};
 int tWIRE[4] = {2, 3, 3, 3};
+
+bool bKEYS = false;
 
 bool ENDGAME = false;
 bool WIN = false;
 unsigned long RELOJ = 30000;//5 min en centesimas
- 
+
 const byte rowsCount = 4;
 const byte columsCount = 4;
- 
 char keys[rowsCount][columsCount] = {
-   { '1','2','3', 'A' },
-   { '4','5','6', 'B' },
-   { '7','8','9', 'C' },
-   { '*','0','#', 'D' }
+  { '1', '2', '3', 'A' },
+  { '4', '5', '6', 'B' },
+  { '7', '8', '9', 'C' },
+  { '*', '0', '#', 'D' }
 };
-
 byte rowPins[rowsCount] = { KEY0, KEY1, KEY2, KEY3 };
 byte columnPins[columsCount] = { KEY4, KEY5, KEY6, KEY7 };
- 
-Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
- 
 
-LiquidCrystal_I2C lcd(0x27,20,4);
+DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 unsigned long TIME = millis();
 
@@ -91,17 +89,21 @@ void setup() {
   //readSequence();
 }
 
-void setup2(){
+void setup2() {
   ld.setBright(15); //1-15
   digitalWrite(BUZZPIN, LOW);
   digitalWrite(ALARMPIN, LOW);
   showTime(RELOJ);
   ENDGAME = false;
-  WIN =false;
+  WIN = false;
+  CUTTED_WIRE[0] = false;
+  CUTTED_WIRE[1] = false;
+  CUTTED_WIRE[2] = false;
+  CUTTED_WIRE[3] = false;
 }
 
 void loop() {
   setup2();
-  while(!ENDGAME)
+  while (!ENDGAME)
     menu();
 }

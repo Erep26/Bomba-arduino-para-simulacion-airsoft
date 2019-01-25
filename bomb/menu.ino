@@ -1,21 +1,21 @@
-int menu(){
-  String MENU[] = {"Menu","1.-Iniciar juego","2.-Configuracion"};
-  String MENU1[] = {"Modos de juego","1.-Bomba","2.-Dominacion"};
+int menu() {
+  String MENU[] = {"Menu", "1.-Iniciar juego", "2.-Configuracion"};
+  String MENU1[] = {"Modos de juego", "1.-Bomba", "2.-Dominacion"};
   String MENU2[] = {"1.-Tiempo", "2.-Seleccion juegos", "3.-Bomba armada", "4.-Otras opciones"};
   String MENU22[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC"};
   String MENU221[] = {String("Contrase") + (char)0xEE + String("a"), "1.-Si/No", String("2.-Cambiar") + String("Contrase") + (char)0xEE + String("a")};
   String MENU222[] = {"5.-Si/No", "Funcion cable", "1.-C1 =    2.-C2 =  ", "3.-C3 =    4.-C4 ="};
   String MENU22T[] = {"1.-Reducir tiempo", "2.-Parar bomba", "3.-No hacer nada", "4.-Explotar"};
-  
-  printMenu(MENU,3);
+
+  printMenu(MENU, 3);
   drawBomb(17, 0);
   int opt = validOption(1, 2);
-  if(opt == 1){ //1.-Iniciar juego
-    while(opt != 0){//0.-Volver
-      printMenu(MENU1,3);
+  if (opt == 1) { //1.-Iniciar juego
+    while (opt != 0) { //0.-Volver
+      printMenu(MENU1, 3);
       drawBomb(17, 0);
       opt = validOption(0, 2);
-      switch(opt){
+      switch (opt) {
         case 1: //1.-Bomba
           game();
           return 0;
@@ -28,69 +28,70 @@ int menu(){
     }
     opt = -1;
   }
-  else if(opt == 2){ // 2.-Configuracion
-    while(opt != 0){//0.-Volver
-      printMenu(MENU2,4);
+  else if (opt == 2) { // 2.-Configuracion
+    while (opt != 0) { //0.-Volver
+      printMenu(MENU2, 4);
       //drawBomb(17, 0);
       opt = validOption(0, 4);
-      if(opt == 1){ //1.-Tiempo
+      if (opt == 1) { //1.-Tiempo
         ld.clear();
         readTime();
       }
-      else if(opt == 2){ //2.-Seleccion juegos
-        while(opt != 0){ //0.-Volver
-          printMenu(MENU22,3);
+      else if (opt == 2) { //2.-Seleccion juegos
+        while (opt != 0) { //0.-Volver
+          printMenu(MENU22, 3);
           opt = validOption(0, 3);
-          if(opt == 1){ // 1.-Contraseña
-            while(opt != 0){
-              printMenu(MENU221,3);
-              printYesNo(bPASS,1);
+          if (opt == 1) { // 1.-Contraseña
+            while (opt != 0) {
+              printMenu(MENU221, 3);
+              printYesNo(bPASS, 1);
               lcd.setCursor(0, 3);
               lcd.print(PASS);
               opt = validOption(0, 2);
-              if(opt == 1) bPASS = !bPASS;
-              else if(opt == 2) newPass();
+              if (opt == 1) bPASS = !bPASS;
+              else if (opt == 2) newPass();
             }
             opt = -1;
           }
-          else if(opt == 2){ //2.-Cables
-            while(opt != 0){ //0.-Volver
-              printMenu(MENU222,4);
-              printYesNo(bWIRE,0);
-              lcd.setCursor(8,2);
+          else if (opt == 2) { //2.-Cables
+            while (opt != 0) { //0.-Volver
+              printMenu(MENU222, 4);
+              printYesNo(bWIRE, 0);
+              lcd.setCursor(8, 2);
               lcd.print(tWIRE[0]);
-              lcd.setCursor(19,2);
+              lcd.setCursor(19, 2);
               lcd.print(tWIRE[1]);
-              lcd.setCursor(8,3);
+              lcd.setCursor(8, 3);
               lcd.print(tWIRE[2]);
-              lcd.setCursor(19,3);
+              lcd.setCursor(19, 3);
               lcd.print(tWIRE[3]);
-              
+
               opt = validOption(0, 5);
-              if(opt == 5) bWIRE = !bWIRE;
-              else if(opt != 0){
+              if (opt == 5) bWIRE = !bWIRE;
+              else if (opt != 0) {
                 printMenu(MENU22T, 4);
                 int opt2 = validOption(1, 4);
-                tWIRE[opt-1] = opt2;
+                tWIRE[opt - 1] = opt2;
               }
             }
+            opt = -1;
           }
-          else if(opt == 3){ //3.-Llaves NFC
-            
+          else if (opt == 3) { //3.-Llaves NFC
+
           }
         }
         opt = -1;
       }
-      else if(opt == 3){ //3.Bomba armada
+      else if (opt == 3) { //3.Bomba armada
       }
-      else if(opt == 4){ //4.Otras opciones
+      else if (opt == 4) { //4.Otras opciones
       }
     }
     opt = -1;
   }
 }
 
-void drawBomb(int col, int fil){
+void drawBomb(int col, int fil) {
   byte bo0[] = {0x00, 0x00, 0x00, 0x00, 0x03, 0x02, 0x04, 0x0C};
   byte bo1[] = {0x00, 0x00, 0x11, 0x0A, 0x13, 0x08, 0x16, 0x05};
   byte bo2[] = {0x01, 0x03, 0x07, 0x0F, 0x0F, 0x1F, 0x1F, 0x1F};
@@ -113,11 +114,11 @@ void drawBomb(int col, int fil){
   lcd.print(" ");
   lcd.write(0);
   lcd.write(1);
-  lcd.setCursor(col, fil+1);
+  lcd.setCursor(col, fil + 1);
   lcd.write(2);
   lcd.write(3);
   lcd.write(4);
-  lcd.setCursor(col, fil+2);
+  lcd.setCursor(col, fil + 2);
   lcd.write(5);
   lcd.write(6);
   lcd.write(7);
@@ -125,31 +126,31 @@ void drawBomb(int col, int fil){
 
 
 
-int validOption(int minOpt, int maxOpt){
+int validOption(int minOpt, int maxOpt) {
   int opt;
-  do{
-      opt = keypad.waitForKey() - '0';
-  }while(opt < minOpt || opt > maxOpt);
+  do {
+    opt = keypad.waitForKey() - '0';
+  } while (opt < minOpt || opt > maxOpt);
   return opt;
 }
 
-void printMenu(String m[], int n){
+void printMenu(String m[], int n) {
   lcd.clear();
-  for(int i = 0; i < n; i++){
-    lcd.setCursor(0,i);
+  for (int i = 0; i < n; i++) {
+    lcd.setCursor(0, i);
     lcd.print(m[i]);
   }
 }
 
-void lcdBorra(int col, int fil, int endCol, int endFil){
-  for(int f = fil; f <= endFil; f++)
-    for(int c = col; c <= endCol; c++){
+void lcdBorra(int col, int fil, int endCol, int endFil) {
+  for (int f = fil; f <= endFil; f++)
+    for (int c = col; c <= endCol; c++) {
       lcd.setCursor(c, f);
       lcd.print(" ");
     }
 }
 
-void readTime(){
+void readTime() {
   unsigned long h, m, s, cs;
   lcdBorra(0, 1, 16, 3);
   lcd.setCursor(0, 1);
@@ -157,63 +158,63 @@ void readTime(){
   lcd.setCursor(0, 2);
   lcd.print("00:00:00:00");
   lcd.setCursor(0, 2);
-  for(int i = 8; i > 0; i--){
+  for (int i = 8; i > 0; i--) {
     char key = 10;
-    while(key < '0' || key > '9' || ((i == 6 || i == 4) && key > '5'))
+    while (key < '0' || key > '9' || ((i == 6 || i == 4) && key > '5'))
       key = keypad.getKey();
     ld.write(i, NUM[key - '0'] );
     lcd.print(key);
-    switch(i){
+    switch (i) {
       case 8:
-          h = (key - '0') * 10;
-          break;
+        h = (key - '0') * 10;
+        break;
       case 7:
-          h += key - '0';
-          lcd.print(":");
-          break;
+        h += key - '0';
+        lcd.print(":");
+        break;
       case 6:
-          m = (key - '0') * 10;
-          Serial.println(m);
-          break;
+        m = (key - '0') * 10;
+        Serial.println(m);
+        break;
       case 5:
-          m += key - '0';
-          Serial.println(m);
-          lcd.print(":");
-          break;
+        m += key - '0';
+        Serial.println(m);
+        lcd.print(":");
+        break;
       case 4:
-          s = (key - '0') * 10;
-          Serial.println(s);
-          break;
+        s = (key - '0') * 10;
+        Serial.println(s);
+        break;
       case 3:
-          s += key - '0';
-          Serial.println(s);
-          lcd.print(":");
-          break;
+        s += key - '0';
+        Serial.println(s);
+        lcd.print(":");
+        break;
       case 2:
-          cs = (key - '0') * 10;
-          Serial.println(cs);
-          break;
+        cs = (key - '0') * 10;
+        Serial.println(cs);
+        break;
       case 1:
-          cs += key - '0';
-          Serial.println(cs);
-          break;
+        cs += key - '0';
+        Serial.println(cs);
+        break;
     }
   }
-RELOJ = h * 360000 + m *6000 + s * 100 + cs;
-Serial.println(RELOJ);
+  RELOJ = h * 360000 + m * 6000 + s * 100 + cs;
+  Serial.println(RELOJ);
 }
 
-void printYesNo(bool yn, int fil){
+void printYesNo(bool yn, int fil) {
   byte _S[] = { 0x0E, 0x11, 0x10, 0x0E, 0x01, 0x11, 0x0E, 0x1F};
   byte _i[] = { 0x04, 0x00, 0x0C, 0x04, 0x04, 0x04, 0x0E, 0x1F};
   byte _N[] = { 0x11, 0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x1F};
   byte _o[] = { 0x00, 0x00, 0x0E, 0x11, 0x11, 0x11, 0x0E, 0x1F};
-  if(yn){
+  if (yn) {
     lcd.createChar(0, _S);
     lcd.createChar(1, _i);
     lcd.setCursor(3, fil);
   }
-  else{
+  else {
     lcd.createChar(0, _N);
     lcd.createChar(1, _o);
     lcd.setCursor(6, fil);
@@ -223,7 +224,7 @@ void printYesNo(bool yn, int fil){
 }
 
 /*
-void printNum(int num){
+  void printNum(int num){
   byte _1[] = { 0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E, 0x1F};
   byte _2[] = { 0x0E, 0x11, 0x01, 0x02, 0x04, 0x08, 0x1F, 0x1F};
   byte _3[] = { 0x1F, 0x02, 0x04, 0x02, 0x01, 0x11, 0x0E, 0x1F};
@@ -247,26 +248,26 @@ void printNum(int num){
       break;
   }
   lcd.write(0);
-}*/
+  }*/
 
-void newPass(){
+void newPass() {
   lcdBorra(0, 3, 19, 3);
   char auxPass[20];
   char key;
   int i = 0;
-  do{
+  do {
     key = keypad.waitForKey();
-    if(key == '*' && i != 0) i--;
-    else if(key != '#' && key != '*'){
+    if (key == '*' && i != 0) i--;
+    else if (key != '#' && key != '*') {
       auxPass[i] = key;
       i++;
     }
-    lcdBorra(0,3,19,3);
-    for(int i2 = 0; i2 < i; i2++){
+    lcdBorra(0, 3, 19, 3);
+    for (int i2 = 0; i2 < i; i2++) {
       lcd.setCursor(i2, 3);
       lcd.print(auxPass[i2]);
     }
-  }while(key != '#' && i < 20);
-  if(i == 0) PASS = "";
+  } while (key != '#' && i < 20);
+  if (i == 0) PASS = "";
   else PASS = String(auxPass).substring(0, i);
 }
