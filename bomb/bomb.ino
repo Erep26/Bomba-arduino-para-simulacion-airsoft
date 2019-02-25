@@ -6,25 +6,25 @@
 #include <Keypad.h>
 
 //Digit led display pins
-#define DIN 11
-#define LOAD 10
-#define CLK 9
+#define DIN 30
+#define LOAD 32
+#define CLK 34
 
 #define BUZZPIN A15
-#define ALARMPIN 12
+#define ALARMPIN 23
 #define GRENADEPIN 13
 
 //KEYPINS
 // ROWS
-#define KEY0 A0
-#define KEY1 A1
-#define KEY2 A2
-#define KEY3 A3
+#define KEY0 25
+#define KEY1 27
+#define KEY2 29
+#define KEY3 31
 // COLUMNS
-#define KEY4 A4
-#define KEY5 A5
-#define KEY6 A6
-#define KEY7 A7
+#define KEY4 33
+#define KEY5 35
+#define KEY6 37
+#define KEY7 39
 
 //Pines de los cables
 #define WIRE1 1
