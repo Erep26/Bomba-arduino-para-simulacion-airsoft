@@ -1,6 +1,6 @@
-unsigned long TIME_PUNTUA = millis();
-void puntua(unsigned long nteam) {
-  unsigned long time = millis();
+ long TIME_PUNTUA = millis();
+void puntua( long nteam) {
+   long time = millis();
   if (time - TIME_PUNTUA >= 10) {
     TIME_PUNTUA = time;
     nteam += 10;
@@ -8,7 +8,7 @@ void puntua(unsigned long nteam) {
 }
 
 void dommination() {
-  unsigned long reloj = RELOJ,
+   long reloj = RELOJ,
                 team1 = 0,
                 team2 = 0;
   while (!ENDGAME) {
@@ -34,10 +34,17 @@ void printGames(bool bp, bool bw, bool bk) {
   lcd.setCursor(0, 0);
   if (bp) lcd.print("Pass?");
   if (bw) lcd.print("Wires?");
-  if (bk) lcd.print("Keys?");
+  if (bk) lcd.print("NFC?");
+
+  if (!bp && !bw && !bk) {
+    lcd.print("Pulsa el boton verde");
+    //lcdBorra(0, 1, 19, 1);
+    //lcd.setCursor(0, 1);
+    //lcd.print("para desactivar la bomba");
+  }
 }
 
-bool checkWire(int n, unsigned long &reloj) {
+bool checkWire(int n,  long &reloj) {
   switch (n) {
     case 1: //-10 seg
       reloj -= 1000;
@@ -52,14 +59,25 @@ bool checkWire(int n, unsigned long &reloj) {
       reloj = 0;
       break;
   }
+  return false;
+}
+
+bool boolRead(int n) {
+  if (digitalRead(n) == HIGH) return true;
+  else return false;
 }
 
 int game() {
-  unsigned long reloj = RELOJ;
+   long reloj = RELOJ;
   String pass = "";
   bool bp = bPASS,
        bw = bWIRE,
        bk = bKEYS;
+
+  lcd.setCursor(0, 0);
+  lcd.clear();
+  lcd.print("Pulsa el boton rojo para armar la bomba");
+  while (boolRead(RED_BTN));
   drawEmptyProgressBar();
   printGames(bp, bw, bk);
   while (!ENDGAME) {
@@ -72,46 +90,65 @@ int game() {
       reloj = 0;
     }
 
+    //Comprovacion bloqueo contraseña resuelto
     if (bp && readChar(pass) && PASS == pass) {
       bp = false;
-      if (!bw && !bk) {
-        ENDGAME = true;
-        WIN = true;
-      }
-      else printGames(bp, bw, bk);
+      printGames(bp, bw, bk);
     }
+    //---------------------------------------
 
+    //Comprovacion bloqueo cables resuelto
     if (bw) {
-      if (digitalRead(WIRE1) && !CUTTED_WIRE[0]) {
-        CUTTED_WIRE[0] = true;
-        if (checkWire(tWIRE[0], reloj)) bw = false;
-        else printGames(bp, bw, bk);
-      }
-      if (digitalRead(WIRE2) && !CUTTED_WIRE[1]) {
-        CUTTED_WIRE[1] = true;
-        if (checkWire(tWIRE[1], reloj)) bw = false;
-        else printGames(bp, bw, bk);
-      }
-      if (digitalRead(WIRE3) && !CUTTED_WIRE[2]) {
-        CUTTED_WIRE[2] = true;
-        if (checkWire(tWIRE[2], reloj)) bw = false;
-        else printGames(bp, bw, bk);
-      }
-      if (digitalRead(WIRE4) && !CUTTED_WIRE[3]) {
-        CUTTED_WIRE[3] = true;
-        if (checkWire(tWIRE[3], reloj)) bw = false;
-        else printGames(bp, bw, bk);
+      for (int i = 0; i < 4; i++) {
+        if (boolRead(WIRE[i]) && !CUTTED_WIRE[i]) {
+          CUTTED_WIRE[i] = true;
+          if (checkWire(tWIRE[i], reloj)) {
+            bw = false;
+            printGames(bp, bw, bk);
+          }
+        }
       }
     }
+    //---------------------------------------
 
+    //Comprovacion bloqueo NFC resuelto
     if (bk) {
-
+      if(mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()){
+                byte readData[18];
+                readBlock(2, readData);
+                if(readData[1] > 0){
+                  readData[1]--;
+                  writeBlock(2, readData);
+                  if(readData[0] == 1){
+                    bk = false;
+                    printGames(bp, bw, bk);
+                  }
+                  else{
+                    long r = readData[2] * 360000 + readData[3] * 6000 + readData[4] * 100 + readData[5];
+                    if(readData[0] == 2){
+                      reloj -= r;
+                      if(reloj > 35999999) reloj = 35999999;
+                    }
+                    else if(readData[0] == 3){
+                      reloj += r;
+                      if(reloj < 0) reloj = 0;
+                    }
+                  }
+                  
+                  
+                }
+                mfr_halt();
+      }
     }
+    //---------------------------------------
 
-    if (!bp && !bw && !bk) {
+
+    if (!bp && !bw && !bk && !boolRead(GREEN_BTN)) { // && green button pulsado
       ENDGAME = true;
       WIN = true;
     }
+
+
 
   }
   /*
@@ -134,15 +171,15 @@ int game() {
   }
 
   lcd.setCursor(0, 0);
-  lcd.print("Pulsa * para volver");
+  lcd.print("Pulsa * para volver ");
   lcd.setCursor(0, 1);
   lcd.print("al menu principal");
   while (keypad.waitForKey() != '*');
 }
 
-unsigned long TIME_COUNTER = millis();
-void counter(unsigned long &reloj) {
-  unsigned long time = millis();
+ long TIME_COUNTER = millis();
+void counter( long &reloj) {
+   long time = millis();
   if (time - TIME_COUNTER >= 10) {
     TIME_COUNTER = time;
     reloj -= 10;
@@ -150,7 +187,7 @@ void counter(unsigned long &reloj) {
   }
 }
 
-void percentageBomb(unsigned long reloj) {
+void percentageBomb( long reloj) {
   byte bar10[] = {0x0F, 0x18, 0x13, 0x17, 0x17, 0x13, 0x18, 0x0F}; //punta izquierda llena
   byte bar11[] = {0x1F, 0x00, 0x18, 0x18, 0x18, 0x18, 0x00, 0x1F}; //centro mitad
   byte bar12[] = {0x1F, 0x00, 0x1B, 0x1B, 0x1B, 0x1B, 0x00, 0x1F}; //centro lleno
@@ -199,7 +236,7 @@ void drawEmptyProgressBar() {
   }
 }
 
-void showTime(unsigned long t) {
+void showTime( long t) {
   //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
   const byte POINT = B10000000;
   const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
@@ -252,10 +289,10 @@ bool readChar(String &p) {
   return false;
 }
 
-unsigned long TIME_BUZZING = millis();
+ long TIME_BUZZING = millis();
 void buzzing() {
   if (bBUZZ) {
-    unsigned long time = millis();
+     long time = millis();
     if (time - TIME_BUZZING >= 1000) {
       TIME_BUZZING = time;
       tone(BUZZPIN, 220, 100);

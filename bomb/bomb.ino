@@ -11,7 +11,7 @@
 #define CLK 34
 
 #define BUZZPIN A15
-#define ALARMPIN 23
+#define ALARMPIN A0
 #define GRENADEPIN 13
 
 //KEYPINS
@@ -27,14 +27,15 @@
 #define KEY7 39
 
 //Pines de los cables
-#define WIRE1 1
-#define WIRE2 2
-#define WIRE3 3
-#define WIRE4 4
+const int WIRE[4] = {14, 15, 16, 17};
+/*#define WIRE1 14
+  #define WIRE2 15
+  #define WIRE3 16
+  #define WIRE4 17*/
 
 //Pines botones
-#define RED_BTN 7
-#define GREEN_BTN 8
+#define RED_BTN 18
+#define GREEN_BTN 19
 
 bool bBUZZ = true;
 bool bALARM = true;
@@ -46,14 +47,14 @@ bool bPASS = true;
 String PASS = "123ABC";
 
 bool bWIRE = false;
-bool CUTTED_WIRE[4] = {false, false, false, false};
+bool CUTTED_WIRE[4];
 int tWIRE[4] = {2, 3, 3, 3};
 
 bool bKEYS = false;
 
 bool ENDGAME = false;
 bool WIN = false;
-unsigned long RELOJ = 30000;//5 min en centesimas
+ long RELOJ = 30000;//5 min en centesimas
 
 const byte rowsCount = 4;
 const byte columsCount = 4;
@@ -70,20 +71,37 @@ DigitLedDisplay ld = DigitLedDisplay(DIN, LOAD, CLK);
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, columnPins, rowsCount, columsCount);
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
+const int RST_PIN = 49;
+const int SS_PIN = 53;
+
+
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+MFRC522::MIFARE_Key nfcKey;
+
+void setupNFC() {
+  SPI.begin();
+  mfrc522.PCD_Init();
+  for (byte i = 0; i < 6; i++) {
+    nfcKey.keyByte[i] = 0xFF;
+  }
+}
+
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   lcd.init();
   lcd.backlight();
   ld.setDigitLimit(8);//8 digitos
+  setupNFC();
 
   pinMode(ALARMPIN, OUTPUT);
   pinMode(BUZZPIN, OUTPUT);
-  pinMode(WIRE1, INPUT_PULLUP);
-  pinMode(WIRE2, INPUT_PULLUP);
-  pinMode(WIRE3, INPUT_PULLUP);
-  pinMode(WIRE4, INPUT_PULLUP);
+  pinMode(WIRE[0], INPUT_PULLUP);
+  pinMode(WIRE[1], INPUT_PULLUP);
+  pinMode(WIRE[2], INPUT_PULLUP);
+  pinMode(WIRE[3], INPUT_PULLUP);
   pinMode(RED_BTN, INPUT_PULLUP);
   pinMode(GREEN_BTN, INPUT_PULLUP);
+
 }
 
 void setup2() {
@@ -94,10 +112,14 @@ void setup2() {
   showTime(RELOJ);
   ENDGAME = false;
   WIN = false;
-  CUTTED_WIRE[0] = false;
-  CUTTED_WIRE[1] = false;
-  CUTTED_WIRE[2] = false;
-  CUTTED_WIRE[3] = false;
+  for (int i = 0; i < 4; i++)
+    CUTTED_WIRE[i] = boolRead(WIRE[i]);
+  /*
+    CUTTED_WIRE[0] = boolRead(WIRE1);
+    CUTTED_WIRE[1] = boolRead(WIRE2);
+    CUTTED_WIRE[2] = boolRead(WIRE3);
+    CUTTED_WIRE[3] = boolRead(WIRE4);
+  */
 }
 
 void loop() {
