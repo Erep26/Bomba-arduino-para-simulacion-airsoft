@@ -1,6 +1,6 @@
- long TIME_PUNTUA = millis();
+long TIME_PUNTUA = millis();
 void puntua( long nteam) {
-   long time = millis();
+  long time = millis();
   if (time - TIME_PUNTUA >= 10) {
     TIME_PUNTUA = time;
     nteam += 10;
@@ -8,9 +8,9 @@ void puntua( long nteam) {
 }
 
 void dommination() {
-   long reloj = RELOJ,
-                team1 = 0,
-                team2 = 0;
+  long reloj = RELOJ,
+       team1 = 0,
+       team2 = 0;
   while (!ENDGAME) {
     counter(reloj);
     buzzing();
@@ -68,7 +68,7 @@ bool boolRead(int n) {
 }
 
 int game() {
-   long reloj = RELOJ;
+  long reloj = RELOJ;
   String pass = "";
   bool bp = bPASS,
        bw = bWIRE,
@@ -113,31 +113,31 @@ int game() {
 
     //Comprovacion bloqueo NFC resuelto
     if (bk) {
-      if(mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()){
-                byte readData[18];
-                readBlock(2, readData);
-                if(readData[1] > 0){
-                  readData[1]--;
-                  writeBlock(2, readData);
-                  if(readData[0] == 1){
-                    bk = false;
-                    printGames(bp, bw, bk);
-                  }
-                  else{
-                    long r = readData[2] * 360000 + readData[3] * 6000 + readData[4] * 100 + readData[5];
-                    if(readData[0] == 2){
-                      reloj -= r;
-                      if(reloj > 35999999) reloj = 35999999;
-                    }
-                    else if(readData[0] == 3){
-                      reloj += r;
-                      if(reloj < 0) reloj = 0;
-                    }
-                  }
-                  
-                  
-                }
-                mfr_halt();
+      if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+        byte readData[18];
+        readBlock(2, readData);
+        if (readData[1] > 0) {
+          readData[1]--;
+          writeBlock(2, readData);
+          if (readData[0] == 1) {
+            bk = false;
+            printGames(bp, bw, bk);
+          }
+          else {
+            long r = readData[2] * 360000 + readData[3] * 6000 + readData[4] * 100 + readData[5];
+            if (readData[0] == 2) {
+              reloj -= r;
+              if (reloj > 35999999) reloj = 35999999;
+            }
+            else if (readData[0] == 3) {
+              reloj += r;
+              if (reloj < 0) reloj = 0;
+            }
+          }
+
+
+        }
+        mfr_halt();
       }
     }
     //---------------------------------------
@@ -177,9 +177,9 @@ int game() {
   while (keypad.waitForKey() != '*');
 }
 
- long TIME_COUNTER = millis();
+long TIME_COUNTER = millis();
 void counter( long &reloj) {
-   long time = millis();
+  long time = millis();
   if (time - TIME_COUNTER >= 10) {
     TIME_COUNTER = time;
     reloj -= 10;
@@ -289,10 +289,10 @@ bool readChar(String &p) {
   return false;
 }
 
- long TIME_BUZZING = millis();
+long TIME_BUZZING = millis();
 void buzzing() {
   if (bBUZZ) {
-     long time = millis();
+    long time = millis();
     if (time - TIME_BUZZING >= 1000) {
       TIME_BUZZING = time;
       tone(BUZZPIN, 220, 100);

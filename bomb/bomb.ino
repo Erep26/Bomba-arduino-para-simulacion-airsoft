@@ -1,3 +1,4 @@
+#include <SparkFun_MMA8452Q.h>
 #include <SPI.h>
 #include <MFRC522.h>
 #include <DigitLedDisplay.h>
@@ -54,7 +55,7 @@ bool bKEYS = false;
 
 bool ENDGAME = false;
 bool WIN = false;
- long RELOJ = 30000;//5 min en centesimas
+long RELOJ = 30000;//5 min en centesimas
 
 const byte rowsCount = 4;
 const byte columsCount = 4;
@@ -78,6 +79,8 @@ const int SS_PIN = 53;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key nfcKey;
 
+MMA8452Q accel;
+
 void setupNFC() {
   SPI.begin();
   mfrc522.PCD_Init();
@@ -88,6 +91,8 @@ void setupNFC() {
 
 void setup() {
   Serial.begin(9600);
+  Wire.begin();
+  accel.begin();
   lcd.init();
   lcd.backlight();
   ld.setDigitLimit(8);//8 digitos

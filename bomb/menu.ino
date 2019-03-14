@@ -101,7 +101,7 @@ int menu() {
             opt = -1;
           }
           else if (opt == 4) {
-            byte data[16] = {1,1,0,0,5,0,0,0,0,0,0,0,0,0,0,0};
+            byte data[16] = {1, 1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             //data[0] tipo
             //data[1] numero usos
             //data[2]:data[3]:data[4]:data[5] tiempo hh:mm:ss:ds
@@ -115,11 +115,11 @@ int menu() {
                   printData(data);
                   opt = validOption(0, 3);
                   if (opt == 1) { //1.-Tipo
-                      printMenu(MENU22411, 3);
-                      data[0] = validOption(1, 3);
-                      //1.-Parar Bomba
-                      //2.-Añadir tiempo
-                      //3.-Restar tiempo
+                    printMenu(MENU22411, 3);
+                    data[0] = validOption(1, 3);
+                    //1.-Parar Bomba
+                    //2.-Añadir tiempo
+                    //3.-Restar tiempo
                   }
                   if (opt == 2) { //2.-Usos
                     printMenu(MENU22412, 2);
@@ -128,8 +128,8 @@ int menu() {
                   if (opt == 3) { //3.-Tiempo
                     byte nfcClock[4];
                     nfcReadTime(nfcClock);
-                    for(int i = 0; i < 4; i++)
-                      data[i+2] = nfcClock[i];
+                    for (int i = 0; i < 4; i++)
+                      data[i + 2] = nfcClock[i];
                   }
                 }
                 opt = -1;
@@ -141,7 +141,7 @@ int menu() {
                 while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
                 byte readData[18];
                 readBlock(2, readData);
-                for(int i = 0; i < 16; i++)
+                for (int i = 0; i < 16; i++)
                   data[i] = readData[i];
                 mfr_halt();
               }
@@ -191,18 +191,28 @@ int menu() {
           inputTest();
           if (key == '#' && n > 1) n--;
           else if (key == '*' && n <= 7) n++;
-          else if (key >= '0' && key <= '9'){
-            byte nums[] = {B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,B01111111,B01111011};
+          else if (key >= '0' && key <= '9') {
+            byte nums[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
             ld.write(n, nums[key - '0']);
           }
-          if(mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()){
-                byte readData[18];
-                readBlock(2, readData);
-                lcdBorra(0,3,19,3);
-                lcd.setCursor(0, 3);
-                for(int i = 0; i < 10; i++)
-                  lcd.print(readData[i]);
-                mfr_halt();
+          if (accel.available()) {
+            lcdBorra(0, 2, 19, 2);
+            lcd.setCursor(0, 2);
+            lcd.print(accel.getCalculatedX(), 3);
+            lcd.print("X");
+            lcd.print(accel.getCalculatedY(), 3);
+            lcd.print("Y");
+            lcd.print(accel.getCalculatedZ(), 3);
+            lcd.print("Z");
+          }
+          if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+            byte readData[18];
+            readBlock(2, readData);
+            lcdBorra(0, 3, 19, 3);
+            lcd.setCursor(0, 3);
+            for (int i = 0; i < 10; i++)
+              lcd.print(readData[i]);
+            mfr_halt();
           }
         } while (key != 'D');
       }
@@ -252,22 +262,22 @@ void drawBomb(int col, int fil) {
   lcd.write(7);
 }
 
-void printData(byte data[]){
+void printData(byte data[]) {
   lcd.setCursor(0, 3);
   lcd.print(data[0]);
   lcd.print(+ " ; ");
   lcd.print(data[1]);
   lcd.print(" ; ");
-  if(data[2] < 10) lcd.print("0");
+  if (data[2] < 10) lcd.print("0");
   lcd.print(data[2]);
   lcd.print(":");
-  if(data[3] < 10) lcd.print("0");
+  if (data[3] < 10) lcd.print("0");
   lcd.print(data[3]);
   lcd.print(":");
-  if(data[4] < 10) lcd.print("0");
+  if (data[4] < 10) lcd.print("0");
   lcd.print(data[4]);
   lcd.print(":");
-  if(data[5] < 10) lcd.print("0");
+  if (data[5] < 10) lcd.print("0");
   lcd.print(data[5]);
 }
 
