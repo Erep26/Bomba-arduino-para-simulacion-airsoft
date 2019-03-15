@@ -103,6 +103,7 @@ int game() {
         if (boolRead(WIRE[i]) && !CUTTED_WIRE[i]) {
           CUTTED_WIRE[i] = true;
           if (checkWire(tWIRE[i], reloj)) {
+            pita();
             bw = false;
             printGames(bp, bw, bk);
           }
@@ -117,6 +118,7 @@ int game() {
         byte readData[18];
         readBlock(2, readData);
         if (readData[1] > 0) {
+          pita();
           readData[1]--;
           writeBlock(2, readData);
           if (readData[0] == 1) {
@@ -270,6 +272,7 @@ void showTime( long t) {
 bool readChar(String &p) {
   char key = keypad.getKey();
   if (key) {
+    pita();
     switch (key) {
       case '#':
         return true;
@@ -298,6 +301,10 @@ void buzzing() {
       tone(BUZZPIN, 220, 100);
     }
   }
+}
+
+void pita(){
+  tone(BUZZPIN, 500, 100);
 }
 
 void alarm() {

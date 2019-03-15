@@ -139,6 +139,7 @@ int menu() {
                 lcd.setCursor(0, 0);
                 lcd.print("Ponga la tarjeta NFC sobre el lector...");
                 while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
+                pita();
                 byte readData[18];
                 readBlock(2, readData);
                 for (int i = 0; i < 16; i++)
@@ -150,6 +151,7 @@ int menu() {
                 lcd.setCursor(0, 0);
                 lcd.print("Ponga la tarjeta NFC sobre el lector...");
                 while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
+                pita();
                 writeBlock(2, data);
                 mfr_halt();
               }
@@ -167,7 +169,7 @@ int menu() {
           check(MENU23[0].length() + 1, 0, bBUZZ);
           check(MENU23[1].length() + 1, 1, bALARM);
           check(MENU23[2].length() + 1, 2, bGRENADE);
-          opt = validOption(0, 4);
+          opt = validOption(0, 3);
           if (opt == 1) bBUZZ = !bBUZZ;
           if (opt == 2) bALARM = !bALARM;
           if (opt == 3) bGRENADE = !bGRENADE;
@@ -180,8 +182,6 @@ int menu() {
         lcd.print("C1 o C2 o C3 o C4 o");
         lcd.setCursor(0, 1);
         lcd.print("B1 o B2 o");
-        lcd.setCursor(0, 2);
-        lcd.print("xxxxx yyyyy zzzzz");
         lcd.setCursor(0, 3);
         lcd.print("NFC");
         char key;
@@ -196,22 +196,31 @@ int menu() {
             ld.write(n, nums[key - '0']);
           }
           if (accel.available()) {
-            lcdBorra(0, 2, 19, 2);
+            //lcdBorra(0, 2, 19, 2);
             lcd.setCursor(0, 2);
-            lcd.print(accel.getCalculatedX(), 3);
+            lcd.print(accel.getCalculatedX(), 2);
             lcd.print("X");
-            lcd.print(accel.getCalculatedY(), 3);
+            lcd.print(accel.getCalculatedY(), 2);
             lcd.print("Y");
-            lcd.print(accel.getCalculatedZ(), 3);
+            lcd.print(accel.getCalculatedZ(), 2);
             lcd.print("Z");
           }
           if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+            lcdBorra(4, 3, 19, 3);
+            lcd.setCursor(4, 3);
+            
+            for (byte i = 0; i < mfrc522.uid.size; i++) {
+                lcd.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+                lcd.print(mfrc522.uid.uidByte[i], HEX);
+             }
+
+            /*
             byte readData[18];
             readBlock(2, readData);
             lcdBorra(0, 3, 19, 3);
             lcd.setCursor(0, 3);
             for (int i = 0; i < 10; i++)
-              lcd.print(readData[i]);
+              lcd.print(readData[i]);*/
             mfr_halt();
           }
         } while (key != 'D');
@@ -287,6 +296,7 @@ int validOption(int minOpt, int maxOpt) {
   do {
     opt = keypad.waitForKey() - '0';
   } while (opt < minOpt || opt > maxOpt);
+  pita();
   return opt;
 }
 
@@ -314,6 +324,7 @@ void nfcReadTime(byte t[4]) {
     char key = 10;
     while (key < '0' || key > '9' || ((i == 6 || i == 4) && key > '5'))
       key = keypad.getKey();
+    pita();
     lcd.print(key);
     switch (i) {
       case 8:
@@ -362,6 +373,7 @@ void readTime() {
     char key = 10;
     while (key < '0' || key > '9' || ((i == 6 || i == 4) && key > '5'))
       key = keypad.getKey();
+    pita();
     ld.write(i, NUM[key - '0'] );
     lcd.print(key);
     switch (i) {
@@ -411,6 +423,7 @@ void newPass() {
   int i = 0;
   do {
     key = keypad.waitForKey();
+    pita();
     if (key == '*' && i != 0) i--;
     else if (key != '#' && key != '*' && i < 20) {
       auxPass[i] = key;
