@@ -1,3 +1,5 @@
+//  Funciones que manejan la lectura y escritura de tarjetas NFC
+
 int writeBlock(int blockNumber, byte arrayAddress[]) {
   //this makes sure that we only write into data blocks. Every 4th block is a trailer block for the access/security info.
   int largestModulo4Number = blockNumber / 4 * 4;
