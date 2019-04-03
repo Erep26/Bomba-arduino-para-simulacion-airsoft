@@ -2,51 +2,26 @@
 
 - ## Menu
 	- ### 1.Iniciar juego
-		- #### Modos de juego
-			- ##### 1.1.Bomba
-			- ##### 1.2.Dominacion
+		- #### 1.-Counterstrike
+		- #### 2.-Asalto
+		- #### 3.-Dominacion
+		- #### 4.-Explosivo
 	- ### 2.Configuracion
-		- #### 2.1.Tiempo
-		- #### 2.2.Seleccion juegos
-			- ##### 2.2.1.Contraseña
-				- ###### Si/No
-				- ###### Introducir contraseña
-			- ##### 2.2.2.Cables
-				- ###### Si/No
-				- ###### Cable 1
-					- Reducir tiempo
-					- Parar bomba
-					- No hacer nada
-					- Explotar
-				- ###### Cable 2
-					- Reducir tiempo
-					- Parar bomba
-					- No hacer nada
-					- Explotar
-				- ###### Cable 3
-					- Reducir tiempo
-					- Parar bomba
-					- No hacer nada
-					- Explotar
-				- ###### Cable 4
-					- Reducir tiempo
-					- Parar bomba
-					- No hacer nada
-					- Explotar
-			- ##### 2.2.3.Llaves NFC
-				- ###### Si/No
-				- ###### Funcion llave
-					- Reducir tiempo
-					- Parar bomba
-					- No hacer nada
-					- Explotar
-		- #### 2.3.Bombba armada
-			- ##### Si/No
-			- ##### Tiempo armado/desarmado
-		- #### 2.4.Otras opciones
-			- ##### Sonido
-			- ##### Alarma explosion
-			- ##### Granada explosion
+		- #### 1.-Tiempo
+			- #### 1.-Tiempo de juego
+			- #### 2.-Tiempo bomba
+			- #### 3.-Tiempo des/armado
+			- #### 4.-Tiempo inicio
+		- #### 2.-Mecanismo bloqueo
+			- #### 1.-Bloqueos activos
+			- #### 2.-Contraseña
+			- #### 3.-Cables
+			- #### 4.-Llaves NFC
+		- #### 3.-Otras opciones
+			- #### 1.-Sonido
+			- #### 2.-Alarma
+			- #### 3.-Granada
+		- #### 4.-Test
 
 # I2C pins (LCD)
 | MODELO | SDA | SCK |
