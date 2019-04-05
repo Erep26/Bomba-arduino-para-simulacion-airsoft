@@ -80,8 +80,8 @@ void menuTime() {
           printLong(RELOJ_JUEGO, 0, 1);
           opt = validOption(0, 1);
           if (opt == 1) {
-            byte b1, b2, b3, b4;
-            RELOJ_JUEGO = readTime(b1, b2, b3, b4);
+            int auxR[4];
+            RELOJ_JUEGO = readTime(auxR);
           }
         }
         opt = -1;
@@ -92,8 +92,8 @@ void menuTime() {
           printLong(RELOJ_BOMBA, 0, 1);
           opt = validOption(0, 1);
           if (opt == 1) {
-            byte b1, b2, b3, b4;
-            RELOJ_BOMBA = readTime(b1, b2, b3, b4);
+            int auxR[4];
+            RELOJ_BOMBA = readTime(auxR);
           }
         }
         opt = -1;
@@ -196,7 +196,10 @@ void menuNfc() {
               data[1] = validOption(1, 'A');// A = infinitos usos
               break;
             case 3:
-              readTime(data[2], data[3], data[4], data[5]);
+              int auxR[4];
+              readTime(auxR);
+              for(int i = 0; i < 4; i++)
+                data[i+2] = auxR[i];
               break;
           }
         }
@@ -253,6 +256,9 @@ void menuOtherOpt() {
     if (opt == 1) bBUZZ = !bBUZZ;
     if (opt == 2) bALARM = !bALARM;
     if (opt == 3) bGRENADE = !bGRENADE;
+    if (opt == 4) {
+
+    }
   } while (opt != 0);
 }
 
@@ -360,7 +366,7 @@ int validOption(int minOpt, int maxOpt) {
   int opt;
   do {
     opt = keypad.waitForKey() - '0';
-    if (opt > 9) opt += '0';
+    if (opt > 9) opt += '0'; // si es una letra
   } while (opt < minOpt || opt > maxOpt);
   pita();
   return opt;
@@ -393,60 +399,39 @@ int readSeconds() {
   return s;
 }
 
-long readTime(byte &h, byte &m, byte &s, byte &cs) {
+long readTime(int t[4]) {
   const byte POINT = B10000000;
   const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
   //long h, m, s, cs;
+  for (int i = 0; i < 4; i++)
+    t[i] = 0;
   ld.clear();
   lcd.setCursor(0, 1);
   lcd.print(INTRO_TIME);
   lcd.setCursor(0, 2);
   lcd.print("  :  :  :  ");
   lcd.setCursor(0, 2);
-
-  for (int i = 8; i > 0; i--) {
-    char key = 10;
-    while (key < '0' || key > '9' || ((i == 6 || i == 4) && key > '5'))
-      key = keypad.getKey();
-    pita();
-    ld.write(i, NUM[key - '0'] );
+  int key;
+  for (int i = 0; i < 8; i++) {
+    if (i == 2 || i == 4) key = validOption(0, 5);
+    else key = validOption(0, 5);
+    ld.write(8 - i, NUM[key] );
     lcd.print(key);
-    switch (i) {
-      case 8:
-        h = (key - '0') * 10;
-        break;
-      case 7:
-        h += key - '0';
-        lcd.print(":");
-        break;
-      case 6:
-        m = (key - '0') * 10;
-        break;
-      case 5:
-        m += key - '0';
-        lcd.print(":");
-        break;
-      case 4:
-        s = (key - '0') * 10;
-        break;
-      case 3:
-        s += key - '0';
-        lcd.print(":");
-        break;
-      case 2:
-        cs = (key - '0') * 10;
-        break;
-      case 1:
-        cs += key - '0';
-        break;
-    }
+    t[(int)i / 2] += key;
+    if (i % 2 == 0) t[(int)i / 2] *= 10;
+    else lcd.print(":");
   }
+  long mul_h = 360000,
+       mul_m = 6000,
+       mul_s = 100;
+  long l = (t[0] * mul_h) + (t[1] * mul_m) + (t[2] * mul_s) + t[3];
+  return l;
 }
 
 void printLong(long t, int col, int fil) {
   unsigned int h = t / 360000;
   unsigned int m = (t % 360000) / 6000;
-  unsigned int s = ((t % 360000) % 6000)/ 100;
+  unsigned int s = ((t % 360000) % 6000) / 100;
   unsigned int cs = t % 100;
   lcd.setCursor(col, fil);
   if (h < 10) lcd.print("0");

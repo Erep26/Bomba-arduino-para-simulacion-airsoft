@@ -13,11 +13,10 @@ void assault() {
   bool bp = bPASS,
        bk = bNFC;
   bool bombActive = false;
-
-  lcd.setCursor(0, 1);
-  lcd.print(BOMB_UNACTIVE);
   drawEmptyProgressBar(2);
   printActiveGames(bp, false, bk, 0, true);
+  lcd.setCursor(0, 1);
+  lcd.print(BOMB_UNACTIVE);
 
   long game_counter = millis();
   while (relojJuego < RELOJ_JUEGO || (bombActive && relojBomba < RELOJ_BOMBA)) {
@@ -35,11 +34,15 @@ void assault() {
     //-------------Chequeo protecciones activas--------------------------
     if (bp && checkPass(pass)) {
       bp = false;
-      printActiveGames(bp, false, bk, 0, true);
+      printActiveGames(bp, false, bk, 0, bombActive);
+      lcdBorra(0, 1, 19, 1);
+      lcd.setCursor(0, 1);
+      if (bombActive) lcd.print(BOMB_ACTIVE);
+      else lcd.print(BOMB_UNACTIVE);
     }
     if (bk && checkNFC(relojBomba)) {
       bk = false;
-      printActiveGames(bp, false, bk, 0, true);
+      printActiveGames(bp, false, bk, 0, bombActive);
     }
     //--------------------------------------------------------------------
     //--------------Activacion/desactivacion bomba-----------------------
@@ -47,21 +50,22 @@ void assault() {
       bombActive = true;
       bp = bPASS;
       bk = bNFC;
-      printActiveGames(bp, false, bk, 0, true);
+      printActiveGames(bp, false, bk, 0, false);
       lcdBorra(0, 1, 19, 1);
+      lcdBorra(0, 3, 19, 3);
       lcd.setCursor(0, 1);
       lcd.print(BOMB_ACTIVE);
     }
-    if (bombActive && !bp && !bk && pushedButton(GREEN_BTN, false, 3)) {
+    else if (bombActive && !bp && !bk && pushedButton(GREEN_BTN, false, 3)) {
       bombActive = false;
       bp = bPASS;
       bk = bNFC;
-      printActiveGames(bp, false, bk, 0, false);
-      lcdBorra(0, 1, 19, 1);
+      printActiveGames(bp, false, bk, 0, true);
+      lcdBorra(0, 3, 19, 3);
+      lcdBorra(0, 3, 19, 3);
       lcd.setCursor(0, 1);
       lcd.print(BOMB_UNACTIVE);
     }
-    //--------------------------------------------------------------------
   }
   winMessage(!bombActive, 0);
   alarm(bombActive);
