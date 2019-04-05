@@ -356,13 +356,13 @@ void buzzing() {
     long time = millis();
     if (time - TIME_BUZZING >= 1000) {
       TIME_BUZZING = time;
-      //tone(BUZZPIN, 220, 100);
+      tone(BUZZPIN, 220, 100);
     }
   }
 }
 
 void pita() {
-  //tone(BUZZPIN, 500, 100);
+  tone(BUZZPIN, 500, 100);
 }
 
 void alarm(bool b) {
