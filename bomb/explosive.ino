@@ -3,7 +3,7 @@
 // game ends when the bomb is detonated, or when it is disarmed. If the accelerometer option is
 // activated and movement is excessive pump will explode in 3 seconds.
 
-void explosive(){
+void explosive() {
   long reloj = 0;
   String pass = "";
   bool bp = bPASS,
@@ -18,10 +18,10 @@ void explosive(){
   long game_counter = millis();
   while (reloj < RELOJ_BOMBA && !win) {
     //if(counter(reloj)){
-    if(countMillis(10, game_counter)){
+    if (countMillis(10, game_counter)) {
       reloj++;
       int x = calculatePercentage(reloj, RELOJ_BOMBA);
-      showTime(RELOJ_BOMBA-reloj);
+      showTime(RELOJ_BOMBA - reloj);
       drawProgressBar(x, 3);
     }
     buzzing();
@@ -44,7 +44,7 @@ void explosive(){
     }
     if (!bp && !bw && !bk && pushedButton(GREEN_BTN, false, 2)) win = true; // && green button pulsado
   }
-  winMessage(win,1);
+  winMessage(win, 1);
   alarm(win);
 }
 

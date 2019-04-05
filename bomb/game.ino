@@ -25,7 +25,7 @@ bool checkPass(String &p) {
     pita();
     switch (key) {
       case '#':
-        if (p == PASS){
+        if (p == PASS) {
           p = "";
           return true;
         }
@@ -74,12 +74,12 @@ bool checkWire(long &reloj, bool cuttedWire[]) {
 bool checkNFC(long &reloj) {
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
     byte readData[18];
-    readBlock(2, readData);
+    readNFC(readData);
     mfr_halt();
     if (readData[1] > 0) {
       pita();
       if (readData[1] != 'A') readData[1]--;
-      writeBlock(2, readData);
+      writeNFC(readData);
       if (readData[0] == 1) {
         return true;
       }
@@ -221,17 +221,17 @@ void printActiveGames(bool bp, bool bw, bool bk, int fila, bool verde) {
   lcdBorra(0, fila, 19, fila);
   lcd.setCursor(0, fila);
   if (bp) lcd.print(GAME_PASS);
-  if (bw){
-    if(bp) lcd.print(";");
+  if (bw) {
+    if (bp) lcd.print(";");
     lcd.print(GAME_WIRE);
   }
-  if (bk){
-    if(bp || bw) lcd.print(";");
+  if (bk) {
+    if (bp || bw) lcd.print(";");
     lcd.print(GAME_NFC);
   }
 
   if (!bp && !bw && !bk) {
-    if(verde) lcd.print(PRESS_GREEN_BUTTON);
+    if (verde) lcd.print(PRESS_GREEN_BUTTON);
     else lcd.print(PRESS_RED_BUTTON);
   }
 }
@@ -379,12 +379,12 @@ int pushedButton_reloj = 0;
 long pushedButton_counter = millis();
 bool pushedButton(int button, bool hilow, int fila) {
   if (boolRead(button) == hilow) {
-    if(TIME_ARMDES == 0) return true;
+    if (TIME_ARMDES == 0) return true;
     if (pushedButton_reloj == 0) drawEmptyProgressBar(fila);
     if (countMillis(1000, pushedButton_counter)) pushedButton_reloj++;
     int x = calculatePercentage(pushedButton_reloj, TIME_ARMDES);
     drawProgressBar(x, fila);
-    if(pushedButton_reloj == TIME_ARMDES){
+    if (pushedButton_reloj == TIME_ARMDES) {
       pushedButton_reloj = 0;
       return true;
     }

@@ -198,32 +198,24 @@ void menuNfc() {
             case 3:
               int auxR[4];
               readTime(auxR);
-              for(int i = 0; i < 4; i++)
-                data[i+2] = auxR[i];
+              for (int i = 0; i < 4; i++)
+                data[i + 2] = auxR[i];
               break;
           }
         }
         opt = -1;
         break;
       case 2:
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print(NFC_CARD_ON_READER);
-        while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
-        pita();
+        waitForNewNFC();
         byte readData[18];
-        readBlock(2, readData);
+        readNFC(readData);
         for (int i = 0; i < 16; i++)
           data[i] = readData[i];
         mfr_halt();
         break;
       case 3:
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print(NFC_CARD_ON_READER);
-        while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
-        pita();
-        writeBlock(2, data);
+        waitForNewNFC();
+        writeNFC(data);
         mfr_halt();
         break;
     }

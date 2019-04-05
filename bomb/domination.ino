@@ -8,18 +8,18 @@
 // the base switches to neutral automaticly.
 void domination() {
   long reloj = 0;
-  long points[2] = {0,0};
+  long points[2] = {0, 0};
   bool dominator[2] = {false, false};
 
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print(RED_TEAM);
   lcd.print("  ");
   lcd.print(GREEN_TEAM);
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print("000000    000000");
 
 
-  
+
   long game_counter = millis();
   drawEmptyProgressBar(2);
   int millisCounter = 0;
@@ -28,20 +28,20 @@ void domination() {
     if (countMillis(10, game_counter)) {
       reloj++;
       millisCounter++;
-      if(millisCounter == 10){//359999 max puntos
+      if (millisCounter == 10) { //359999 max puntos
         millisCounter = 0;
-        if (dominator[0]){
+        if (dominator[0]) {
           points[0]++;
           int i = 0;
-          for(long p = points[0]; p > 0; p /= 10) i++;
-          lcd.setCursor(6-i,1);
+          for (long p = points[0]; p > 0; p /= 10) i++;
+          lcd.setCursor(6 - i, 1);
           lcd.print(points[0]);
         }
-        if (dominator[1]){
+        if (dominator[1]) {
           points[1]++;
           int i = 0;
-          for(long p = points[1]; p > 0; p /= 10) i++;
-          lcd.setCursor(16-i,1);
+          for (long p = points[1]; p > 0; p /= 10) i++;
+          lcd.setCursor(16 - i, 1);
           lcd.print(points[1]);
         }
       }
@@ -51,14 +51,14 @@ void domination() {
     }
     buzzing();
     if (dominator[0]) {
-      if(pushedButton(GREEN_BTN, false, 3)) dominator[0] = false;
+      if (pushedButton(GREEN_BTN, false, 3)) dominator[0] = false;
     }
     if (dominator[1]) {
-      if(pushedButton(RED_BTN, false, 3)) dominator[1] = false;
+      if (pushedButton(RED_BTN, false, 3)) dominator[1] = false;
     }
-    if(!dominator[0] && !dominator[1]){
-      if(boolRead(GREEN_BTN) && pushedButton(RED_BTN, false, 3)) dominator[0] = true;
-      if(boolRead(RED_BTN) && pushedButton(GREEN_BTN, false, 3)) dominator[1] = true;
+    if (!dominator[0] && !dominator[1]) {
+      if (boolRead(GREEN_BTN) && pushedButton(RED_BTN, false, 3)) dominator[0] = true;
+      if (boolRead(RED_BTN) && pushedButton(GREEN_BTN, false, 3)) dominator[1] = true;
     }
   }
   if (points[0] == points[1]) {
