@@ -99,12 +99,6 @@ bool checkNFC(long &reloj) {
   return false;
 }
 
-void grenade() {
-  if (bGRENADE) digitalWrite(GRENADEPIN, HIGH);
-  delay(1000);
-  digitalWrite(GRENADEPIN, LOW);
-}
-
 void waitFor(int s) {
   lcd.clear();
   lcd.setCursor(1, 0);
@@ -367,6 +361,12 @@ void pita() {
 
 void alarm(bool b) {
   //if (bALARM && b) digitalWrite(ALARMPIN, HIGH);
+}
+
+void grenade() {
+  if (bGRENADE) digitalWrite(GRENADEPIN, HIGH);
+  delay(1000);
+  digitalWrite(GRENADEPIN, LOW);
 }
 
 void winMessage(bool b, int fil) {

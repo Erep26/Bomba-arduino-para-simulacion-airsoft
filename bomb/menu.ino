@@ -248,8 +248,53 @@ void menuOtherOpt() {
     if (opt == 1) bBUZZ = !bBUZZ;
     if (opt == 2) bALARM = !bALARM;
     if (opt == 3) bGRENADE = !bGRENADE;
-    if (opt == 4) {
+    if (opt == 4) menuShock();
+  } while (opt != 0);
+}
 
+void menuShock() {
+  int opt;
+  do {
+    printScreen(MENU_SHOCK);
+    check(MENU_SHOCK[0].length() + 1, 0, bSHOCK);
+    lcd.setCursor(3, 0);
+    lcd.print(SHOCK_SENSIBILITY);
+    opt = validOption(0, 2);
+    if (opt == 1) bSHOCK = !bSHOCK;
+    else if (opt == 2) {
+      do {
+        printScreen(MENU_SHOCK2);
+        lcd.setCursor(3, 0);
+        lcd.print(SHOCK_SENSIBILITY);
+        opt = validOption(0, 2);
+        switch (opt) {
+          case 1:
+            //ajuste manual SHOCK_SENSIBILITY != 0
+            printScreen(INTRO2NUM);
+            opt = validOption(0,9);
+            lcd.setCursor(2,0);
+            lcd.print(opt);
+            SHOCK_SENSIBILITY = opt * 10;
+            if(opt == 0) opt = validOption(1,9);
+            else opt = validOption(0,9);
+            SHOCK_SENSIBILITY += opt;
+            lcd.print(opt);
+            opt = -1;
+            break;
+          case 2:
+            lcd.clear();
+            lcd.setCursor(1,0);
+            lcd.print(WAIT_FOR_SHOCK);
+            byte s = 0;
+            do{
+              s = accel.readTap();
+            }while(s <= 0);
+            pita();
+            SHOCK_SENSIBILITY = s;
+            break;
+        }
+      } while (opt != 0);
+      opt = -1;
     }
   } while (opt != 0);
 }

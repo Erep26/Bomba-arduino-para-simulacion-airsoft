@@ -60,25 +60,6 @@ MFRC522::MIFARE_Key nfcKey;
 
 MMA8452Q accel;
 
-//-----------------------VARIABLES GLOVALES BOMBA--------------------------------------
-bool bBUZZ = true;
-bool bALARM = true;
-bool bGRENADE = true;
-
-bool bPASS = true; //bloqueo contraseña
-String PASS = "123ABC"; //contraseña
-
-bool bWIRE = false; //bloqueo cables
-int tWIRE[4] = {2, 3, 3, 3};// efecto cable 1=-10seg 2=pararBomba 3=nada 4= booom!
-
-bool bNFC = false; //bloqueo NFC
-
-long RELOJ_JUEGO = 60000;//10 min en centisegundos
-long RELOJ_BOMBA = 30000;//5 min en centisegundos
-int TIME_ARMDES = 10; //tiempo armado/desarmado bomba en segundos
-int INIT_TIME = 10; //tiempo para iniciar juego en segundos
-//------------------------------------------------------------------------------------
-
 //----------------------------------TEXTOS--------------------------------------------
 const PROGMEM String MENU_PRINCIPAL[] = { "Menu", "1.-Iniciar juego", "2.-Configuracion", ""};
 const PROGMEM String MENU_JUEGO[] = {"1.-Counterstrike", "2.-Asalto", "3.-Dominacion", "4.-Explosivo"};
@@ -96,6 +77,9 @@ const PROGMEM String MENU_NFC_CONF[] = {"1.-Tipo", "2.-Usos", "3.-Tiempo", ""};
 const PROGMEM String MENU_NFC_TIPO[] = {"1.-Parar Bomba", String("2.-A") + (char)0xEE + String("adir tiempo"), "3.-Restar tiempo", ""};
 const PROGMEM String MENU_NFC_USOS[] = {"Numero de usos", "de 1 a 9, o A para", "infinitos usos", ""};
 const PROGMEM String MENU_OTHER_OPT[] = {"1.-Sonido", "2.-Alarma", "3.-Granada", "4.-Sensor golpes"};
+const PROGMEM String MENU_SHOCK[] = {"1.-Sensor golpes", "2.-Ajuste sensivilidad", "Sensivilidad actual:", ""};
+const PROGMEM String MENU_SHOCK2[] = {"1.-Ajuste manual", "2.-Ajuste por golpe", "Sensivilidad actual:", ""};
+const PROGMEM String WAIT_FOR_SHOCK = {"Golpea el dispositivo"};
 const PROGMEM String NFC_CARD_ON_READER = "Ponga la tarjeta NFC sobre el lector...";
 const PROGMEM String WIN_MESSAGE_RED = "    RED TEAM WIN    ";
 const PROGMEM String WIN_MESSAGE_GREEN = "   GREEN TEAM WIN   ";
@@ -111,6 +95,30 @@ const PROGMEM String GAME_NFC = "NFC";
 const PROGMEM String GAME_START_IN = "The game starts in";
 const PROGMEM String RED_TEAM = "Red team";
 const PROGMEM String GREEN_TEAM = "Green team";
+const PROGMEM String INTRO2NUM[] = {"Introduce un valor", "de 2 digitos:", "", ""};
+//------------------------------------------------------------------------------------
+
+//-----------------------VARIABLES GLOVALES BOMBA--------------------------------------
+bool bBUZZ = true;
+bool bALARM = true;
+bool bGRENADE = true;
+
+bool bSHOCK = false;
+byte SHOCK_SENSIBILITY = 75; 
+
+bool bPASS = true; //bloqueo contraseña
+String PASS = "123ABC"; //contraseña
+
+bool bWIRE = false; //bloqueo cables
+int tWIRE[4] = {2, 3, 3, 3};// efecto cable 1=-10seg 2=pararBomba 3=nada 4= booom!
+
+bool bNFC = false; //bloqueo NFC
+
+long RELOJ_JUEGO = 60000;//10 min en centisegundos
+long RELOJ_BOMBA = 30000;//5 min en centisegundos
+int TIME_ARMDES = 10; //tiempo armado/desarmado bomba en segundos
+int INIT_TIME = 10; //tiempo para iniciar juego en segundos
+
 //------------------------------------------------------------------------------------
 
 void setup() {
