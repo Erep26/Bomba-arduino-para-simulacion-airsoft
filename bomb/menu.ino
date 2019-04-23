@@ -19,27 +19,29 @@ void menuJuego() {
     printScreen(MENU_JUEGO);
     drawBomb(17, 0);
     opt = validOption(0, 4);
+    if(opt != 0){
+      waitFor(INIT_TIME);
+        alarm(true);
+        delay(1000);
+        alarm(false);
+    }
     switch (opt) {
       case 1: //1.-Counterstrike
-        waitFor(INIT_TIME);
         counterstrike();
-        keypad.waitForKey();
         break;
       case 2: //2.-Asalto
-        waitFor(INIT_TIME);
         assault();
-        keypad.waitForKey();
         break;
       case 3: //3.-Dominacion
-        waitFor(INIT_TIME);
         domination();
-        keypad.waitForKey();
         break;
       case 4: //4.-Explosivo
-        waitFor(INIT_TIME);
         explosive();
-        keypad.waitForKey();
         break;
+    }
+    if(opt != 0){
+      keypad.waitForKey();
+      opt = 0;
     }
   } while (opt != 0);
 }
@@ -244,7 +246,7 @@ void menuOtherOpt() {
     check(MENU_OTHER_OPT[0].length() + 1, 0, bBUZZ);
     check(MENU_OTHER_OPT[1].length() + 1, 1, bALARM);
     check(MENU_OTHER_OPT[2].length() + 1, 2, bGRENADE);
-    opt = validOption(0, 3);
+    opt = validOption(0, 4);
     if (opt == 1) bBUZZ = !bBUZZ;
     if (opt == 2) bALARM = !bALARM;
     if (opt == 3) bGRENADE = !bGRENADE;
@@ -257,38 +259,37 @@ void menuShock() {
   do {
     printScreen(MENU_SHOCK);
     check(MENU_SHOCK[0].length() + 1, 0, bSHOCK);
-    lcd.setCursor(3, 0);
+    lcd.setCursor(0, 3);
     lcd.print(SHOCK_SENSIBILITY);
     opt = validOption(0, 2);
     if (opt == 1) bSHOCK = !bSHOCK;
     else if (opt == 2) {
       do {
         printScreen(MENU_SHOCK2);
-        lcd.setCursor(3, 0);
+        lcd.setCursor(0, 3);
         lcd.print(SHOCK_SENSIBILITY);
         opt = validOption(0, 2);
         switch (opt) {
           case 1:
             //ajuste manual SHOCK_SENSIBILITY != 0
             printScreen(INTRO2NUM);
-            opt = validOption(0,9);
-            lcd.setCursor(2,0);
+            opt = validOption(0, 9);
+            lcd.setCursor(2, 0);
             lcd.print(opt);
             SHOCK_SENSIBILITY = opt * 10;
-            if(opt == 0) opt = validOption(1,9);
-            else opt = validOption(0,9);
+            if (opt == 0) opt = validOption(1, 9);
+            else opt = validOption(0, 9);
             SHOCK_SENSIBILITY += opt;
             lcd.print(opt);
             opt = -1;
             break;
           case 2:
             lcd.clear();
-            lcd.setCursor(1,0);
+            lcd.setCursor(0, 0);
             lcd.print(WAIT_FOR_SHOCK);
             byte s = 0;
-            do{
+            while (s == 0)
               s = accel.readTap();
-            }while(s <= 0);
             pita();
             SHOCK_SENSIBILITY = s;
             break;

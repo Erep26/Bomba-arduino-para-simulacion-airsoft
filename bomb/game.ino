@@ -133,10 +133,10 @@ void showTime( long t) {
   //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
   const byte POINT = B10000000;
   const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
-  int h = t / 360000;
-  int m = ((t / 100) % 3600) / 60;
-  int s = ((t / 100) % 3600) % 60;
-  int cs = t % 100;
+  long h = t / 360000;
+  long m = ((t / 100) % 3600) / 60;
+  long s = ((t / 100) % 3600) % 60;
+  long cs = t % 100;
 
   ld.write(8, NUM[(int)h / 10] );
   ld.write(7, NUM[(int)h % 10] + (POINT /** (cs / 10 % 2)*/));
@@ -361,6 +361,7 @@ void pita() {
 
 void alarm(bool b) {
   //if (bALARM && b) digitalWrite(ALARMPIN, HIGH);
+  //if(!b) digitalWrite(ALARMPIN, LOW);
 }
 
 void grenade() {
