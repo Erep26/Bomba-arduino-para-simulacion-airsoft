@@ -15,19 +15,27 @@ void explosive() {
     cuttedWire[i] = boolRead(WIRE[i]);
   drawEmptyProgressBar(3);
   printActiveGames(bp, bw, bk, 0, true);
+  int lastPercentage = 0;
   long game_counter = millis();
   while (reloj < RELOJ_BOMBA && !win) {
     //if(counter(reloj)){
     if (countMillis(10, game_counter)) {
       reloj++;
-      int x = calculatePercentage(reloj, RELOJ_BOMBA);
       showTime(RELOJ_BOMBA - reloj);
-      drawProgressBar(x, 3);
+      int x = calculatePercentage(reloj, RELOJ_BOMBA);
+      if(lastPercentage != x){
+        drawPercentage(16, 3, x);
+        int from = percentageBarPosition(lastPercentage, 30);
+        int to = percentageBarPosition(x, 30);
+        if(from != to) drawProgressBar(from, to, 30, 0, 3);
+        lastPercentage = x;
+      }
     }
     buzzing();
     if (reloj >= RELOJ_BOMBA) {
       reloj = RELOJ_BOMBA;
-      drawProgressBar(100, 3);
+      drawPercentage(16, 3, 100);
+      drawProgressBar(lastPercentage, 30, 30, 0, 3);
     }
     if (bp && checkPass(pass)) {
       bp = false;
@@ -45,6 +53,6 @@ void explosive() {
     if (!bp && !bw && !bk && pushedButton(GREEN_BTN, false, 2)) win = true; // && green button pulsado
   }
   winMessage(win, 1);
-  alarm(win);
+  alarm(true);
 }
 

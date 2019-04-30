@@ -27,6 +27,7 @@ void counterstrike() {
   bool bombActive = false;
 
   printActiveGames(bp, false, bk, 0, false);
+  int lastPercentage = 0;
   long game_counter = millis();
   while (relojJuego < RELOJ_JUEGO && !bombActive) {
     if (countMillis(10, game_counter)) {
@@ -58,14 +59,20 @@ void counterstrike() {
     while (relojBomba < RELOJ_BOMBA && !win) {
       if (countMillis(10, game_counter)) {
         relojBomba++;
-        int x = calculatePercentage(relojBomba, RELOJ_BOMBA);
         showTime(RELOJ_BOMBA - relojBomba);
-        drawProgressBar(x, 2);
+        int x = calculatePercentage(relojBomba, RELOJ_BOMBA);
+        if (lastPercentage != x) {
+          drawPercentage(16, 2, x);
+          int from = percentageBarPosition(lastPercentage, 30);
+          int to = percentageBarPosition(x, 30);
+          if (from != to) drawProgressBar(from, to, 30, 0, 2);
+          lastPercentage = x;
+        }
       }
       buzzing();
       if (relojBomba >= RELOJ_BOMBA) {
         relojBomba = RELOJ_BOMBA;
-        drawProgressBar(100, 2);
+        drawProgressBar(lastPercentage, 30, 30, 0, 2);
       }
       if (bp && checkPass(pass)) {
         bp = false;
@@ -82,5 +89,5 @@ void counterstrike() {
     }
   }
   winMessage(win, 1);
-  alarm(win);
+  alarm(true);
 }

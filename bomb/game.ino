@@ -11,6 +11,10 @@ int calculatePercentage(long passedTime, long maxTime) {
   return (int)((passedTime * 100) / maxTime);
 }
 
+int percentageBarPosition(int percentage, int barLength) {
+  return (int)((percentage * barLength) / 100);
+}
+
 bool countMillis(int t, long &counted) {
   if ((millis() - counted) >= t) {
     counted = millis();
@@ -32,12 +36,14 @@ bool checkPass(String &p) {
         break;
       case '*':
         p = "";
-        lcdBorra(0, 1, 19, 1);
+        lcdBorraFila(1);
+        //lcdBorra(0, 1, 19, 1);
         break;
       default:
         if (p.length() < 20) {
           p += key;
-          lcdBorra(0, 1, 19, 1);
+          lcdBorraFila(1);
+          //lcdBorra(0, 1, 19, 1);
           lcd.setCursor(0, 1);
           for (int i = 0; i < p.length(); i++) lcd.print('*');
         }
@@ -151,9 +157,15 @@ void showTime( long t) {
   else ld.setBright(15);
 }
 
+void drawPercentage(int col, int fil, int percentage) {
+  lcd.setCursor(col, fil);
+  if (percentage < 100) lcd.print(" ");
+  if (percentage < 10) lcd.print(" ");
+  lcd.print(percentage);
+  lcd.print("%");
+}
 
-void drawProgressBar(int percentage, int fila) {
-
+void drawProgressBar(int from, int to, int maxPercentage, int col, int fila) {
   byte bar10[] = {0x0F, 0x18, 0x13, 0x17, 0x17, 0x13, 0x18, 0x0F}; //punta izquierda llena
   byte bar11[] = {0x1F, 0x00, 0x18, 0x18, 0x18, 0x18, 0x00, 0x1F}; //centro mitad
   byte bar12[] = {0x1F, 0x00, 0x1B, 0x1B, 0x1B, 0x1B, 0x00, 0x1F}; //centro lleno
@@ -164,30 +176,21 @@ void drawProgressBar(int percentage, int fila) {
   lcd.createChar(5, bar12);
   lcd.createChar(6, bar13);
 
-  int x2 = (percentage * 30) / 100;
-
-  for (int x = 0; x <= x2; x++) {
+  for (int x = from; x <= to; x++) {
     if (x == 1) {
-      lcd.setCursor(0, fila);
+      lcd.setCursor(col, fila);
       lcd.write(3);
     }
+    else if (x == maxPercentage) {
+      lcd.setCursor(col + ((int)maxPercentage / 2), fila);
+      lcd.write(6);
+    }
     else if (((int)x / 2) != 0) {
-      lcd.setCursor(((int)x / 2), fila);
+      lcd.setCursor(col + ((int)x / 2), fila);
       if (x % 2 == 1) lcd.write(5);
       else lcd.write(4);
     }
   }
-
-  if (percentage == 100) {
-    lcd.setCursor(15, fila);
-    lcd.write(6);
-  }
-
-  lcd.setCursor(16, fila);
-  if (percentage < 100) lcd.print(" ");
-  if (percentage < 10) lcd.print(" ");
-  lcd.print(percentage);
-  lcd.print("%");
 }
 
 void drawEmptyProgressBar(int fila) {
@@ -212,7 +215,8 @@ void drawEmptyProgressBar(int fila) {
 }
 
 void printActiveGames(bool bp, bool bw, bool bk, int fila, bool verde) {
-  lcdBorra(0, fila, 19, fila);
+  //lcdBorra(0, fila, 19, fila);
+  lcdBorraFila(fila);
   lcd.setCursor(0, fila);
   if (bp) lcd.print(GAME_PASS);
   if (bw) {
@@ -360,8 +364,8 @@ void pita() {
 }
 
 void alarm(bool b) {
-  //if (bALARM && b) digitalWrite(ALARMPIN, HIGH);
-  //if(!b) digitalWrite(ALARMPIN, LOW);
+  if (bALARM && b) digitalWrite(ALARMPIN, HIGH);
+  if(!b) digitalWrite(ALARMPIN, LOW);
 }
 
 void grenade() {
@@ -378,22 +382,35 @@ void winMessage(bool b, int fil) {
 
 int pushedButton_reloj = 0;
 long pushedButton_counter = millis();
+int pushedButton_lastPercentage = 0;
+bool lastStateButton = false;
+
 bool pushedButton(int button, bool hilow, int fila) {
   if (boolRead(button) == hilow) {
+    lastStateButton = true;
     if (TIME_ARMDES == 0) return true;
     if (pushedButton_reloj == 0) drawEmptyProgressBar(fila);
     if (countMillis(1000, pushedButton_counter)) pushedButton_reloj++;
     int x = calculatePercentage(pushedButton_reloj, TIME_ARMDES);
-    drawProgressBar(x, fila);
+    if(pushedButton_lastPercentage != x){
+      drawPercentage(16, fila, x);
+      int from = percentageBarPosition(pushedButton_lastPercentage, 30);
+      int to = percentageBarPosition(x, 30);
+      if(from != to) drawProgressBar(from, to, 30, 0, fila);
+      pushedButton_lastPercentage = x;
+    }
     if (pushedButton_reloj == TIME_ARMDES) {
       pushedButton_reloj = 0;
       return true;
     }
   }
-  else {
+  else if(lastStateButton) {
     pushedButton_counter = millis();
     pushedButton_reloj = 0;
-    lcdBorra(0, fila, 19, fila);
+    pushedButton_lastPercentage = 0;
+    //lcdBorra(0, fila, 19, fila);
+    lcdBorraFila(fila);
+    lastStateButton = false;
   }
   return false;
 }

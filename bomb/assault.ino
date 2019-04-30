@@ -17,17 +17,24 @@ void assault() {
   printActiveGames(bp, false, bk, 0, true);
   lcd.setCursor(0, 1);
   lcd.print(BOMB_UNACTIVE);
-
+  int lastPercentage = 0;
   long game_counter = millis();
-  while (relojJuego < RELOJ_JUEGO || (bombActive && relojBomba < RELOJ_BOMBA)) {
+  while ( relojBomba < RELOJ_BOMBA && relojJuego < RELOJ_JUEGO) {
+    buzzing();
     //--------------Contador juego----------------
     if (countMillis(10, game_counter)) {
       relojJuego++;
       if (bombActive) {
         relojBomba++;
-        int x = calculatePercentage(relojBomba, RELOJ_BOMBA);
         showTime(RELOJ_BOMBA - relojBomba);
-        drawProgressBar(x, 2);
+        int x = calculatePercentage(relojBomba, RELOJ_BOMBA);
+        if (lastPercentage != x) {
+          drawPercentage(16, 2, x);
+          int from = percentageBarPosition(lastPercentage, 30);
+          int to = percentageBarPosition(x, 30);
+          if (from != to) drawProgressBar(from, to, 30, 0, 2);
+          lastPercentage = x;
+        }
       }
       else showTime(RELOJ_JUEGO - relojJuego);
     }
@@ -68,5 +75,5 @@ void assault() {
     }
   }
   winMessage(!bombActive, 0);
-  alarm(bombActive);
+  alarm(true);
 }

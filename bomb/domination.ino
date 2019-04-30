@@ -22,32 +22,39 @@ void domination() {
 
   long game_counter = millis();
   drawEmptyProgressBar(2);
+  int lastPercentage = 0;
   int millisCounter = 0;
   while (reloj < RELOJ_JUEGO) {
 
     if (countMillis(10, game_counter)) {
       reloj++;
       millisCounter++;
-      if (millisCounter == 10) { //359999 max puntos
+      showTime(RELOJ_JUEGO - reloj);
+      int x = calculatePercentage(reloj, RELOJ_JUEGO);
+      if(lastPercentage != x){
+        drawPercentage(16, 2, x);
+        int from = percentageBarPosition(lastPercentage, 30);
+        int to = percentageBarPosition(x, 30);
+        if(from != to) drawProgressBar(from, to, 30, 0, 2);
+        lastPercentage = x;
+      }
+      if (millisCounter >= 10) { //359999 max puntos
         millisCounter = 0;
         if (dominator[0]) {
           points[0]++;
-          int i = 0;
-          for (long p = points[0]; p > 0; p /= 10) i++;
-          lcd.setCursor(6 - i, 1);
-          lcd.print(points[0]);
+          char buffer[7];
+          sprintf(buffer,"%06d",points[0]);
+          lcd.setCursor(0, 1);
+          lcd.print(buffer);
         }
         if (dominator[1]) {
           points[1]++;
-          int i = 0;
-          for (long p = points[1]; p > 0; p /= 10) i++;
-          lcd.setCursor(16 - i, 1);
-          lcd.print(points[1]);
+          char buffer[7];
+          sprintf(buffer,"%06d",points[1]);
+          lcd.setCursor(10, 1);
+          lcd.print(buffer);
         }
       }
-      int x = calculatePercentage(reloj, RELOJ_JUEGO);
-      showTime(RELOJ_JUEGO - reloj);
-      drawProgressBar(x, 2);
     }
     buzzing();
     if (dominator[0]) {
@@ -66,4 +73,5 @@ void domination() {
     lcd.print(DRAW);
   }
   else winMessage((points[1] > points[0]), 0);
+  alarm(true);
 }

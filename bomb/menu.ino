@@ -381,11 +381,13 @@ void drawBomb(int col, int fil) {
 
 void printData(byte data[]) {
   lcd.setCursor(0, 3);
-  lcd.print(data[0]);
-  lcd.print(+ " ; ");
+  lcd.print(data[0] + " ; ");
   if (data[1] != 'A') lcd.print(data[1]);
   else lcd.print("A");
-  lcd.print(" ; ");
+  char buffer[20];
+  sprintf(buffer," ; %02d:%02d:%02d:%02d",data[2],data[3],data[4],data[5]);
+  lcd.print(buffer);
+  /*
   if (data[2] < 10) lcd.print("0");
   lcd.print(data[2]);
   lcd.print(":");
@@ -396,7 +398,7 @@ void printData(byte data[]) {
   lcd.print(data[4]);
   lcd.print(":");
   if (data[5] < 10) lcd.print("0");
-  lcd.print(data[5]);
+  lcd.print(data[5]);*/
 }
 
 
@@ -416,6 +418,11 @@ void printScreen(const String m[]) {
     lcd.setCursor(0, i);
     lcd.print(m[i]);
   }
+}
+
+void lcdBorraFila(int fila){
+  lcd.setCursor(0, fila);
+  lcd.print("                    ");
 }
 
 void lcdBorra(int col, int fil, int endCol, int endFil) {
@@ -472,6 +479,12 @@ void printLong(long t, int col, int fil) {
   unsigned int s = ((t % 360000) % 6000) / 100;
   unsigned int cs = t % 100;
   lcd.setCursor(col, fil);
+  
+  char buffer[15];
+  sprintf(buffer,"%02d:%02d:%02d:%02d",h,m,s,cs);
+  lcd.print(buffer);
+  
+  /*
   if (h < 10) lcd.print("0");
   lcd.print(h);
   lcd.print(":");
@@ -482,7 +495,7 @@ void printLong(long t, int col, int fil) {
   lcd.print(s);
   lcd.print(":");
   if (cs < 10) lcd.print("0");
-  lcd.print(cs);
+  lcd.print(cs);*/
 }
 
 void newPass() {
