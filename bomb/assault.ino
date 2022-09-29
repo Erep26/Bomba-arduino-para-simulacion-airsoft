@@ -7,8 +7,8 @@
 // Bomba puede armarse y desarmarse hasta que acabe el tiempo de juego
 
 void assault() {
-  long relojBomba = 0;
-  long relojJuego = 0;
+  unsigned long relojBomba = 0;
+  unsigned long relojJuego = 0;
   String pass = "";
   bool bp = bPASS,
        bk = bNFC;
@@ -18,7 +18,7 @@ void assault() {
   lcd.setCursor(0, 1);
   lcd.print(BOMB_UNACTIVE);
   int lastPercentage = 0;
-  long game_counter = millis();
+  unsigned long game_counter = millis();
   while ( relojBomba < RELOJ_BOMBA && relojJuego < RELOJ_JUEGO) {
     buzzing();
     //--------------Contador juego----------------
@@ -77,3 +77,4 @@ void assault() {
   winMessage(!bombActive, 0);
   alarm(true);
 }
+

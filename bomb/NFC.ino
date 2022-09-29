@@ -25,3 +25,4 @@ void waitForNewNFC() {
   while ( ! mfrc522.PICC_IsNewCardPresent() || ! mfrc522.PICC_ReadCardSerial());
   pita();
 }
+

@@ -18,8 +18,8 @@
 //
 // Se arma y desarma 1 sola vez
 void counterstrike() {
-  long relojBomba = 0;
-  long relojJuego = 0;
+  unsigned long relojBomba = 0;
+  unsigned long relojJuego = 0;
   String pass = "";
   bool bp = bPASS,
        bk = bNFC;
@@ -28,7 +28,7 @@ void counterstrike() {
 
   printActiveGames(bp, false, bk, 0, false);
   int lastPercentage = 0;
-  long game_counter = millis();
+  unsigned long game_counter = millis();
   while (relojJuego < RELOJ_JUEGO && !bombActive) {
     if (countMillis(10, game_counter)) {
       relojJuego++;
@@ -91,3 +91,4 @@ void counterstrike() {
   winMessage(win, 1);
   alarm(true);
 }
+

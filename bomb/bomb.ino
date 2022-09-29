@@ -14,8 +14,8 @@
 #define CLK 34
 
 #define BUZZPIN A15
-#define ALARMPIN A0
-#define GRENADEPIN 13
+#define ALARMPIN 40
+#define GRENADEPIN 41
 
 //KEYPINS
 // ROWS
@@ -61,41 +61,41 @@ MFRC522::MIFARE_Key nfcKey;
 MMA8452Q accel;
 
 //----------------------------------TEXTOS--------------------------------------------
-const PROGMEM String MENU_PRINCIPAL[] = { "Menu", "1.-Iniciar juego", "2.-Configuracion", ""};
-const PROGMEM String MENU_JUEGO[] = {"1.-Counterstrike", "2.-Asalto", "3.-Dominacion", "4.-Explosivo"};
-const PROGMEM String MENU_CONF[] = {"1.-Tiempo", "2.-Mecanismo bloqueo", "3.-Otras opciones", "4.-Test"};
-const PROGMEM String MENU_TIME[] = {"1.-Tiempo de juego", "2.-Tiempo bomba", "3.-Tiempo des/armado", "4.-Tiempo inicio"};
-const PROGMEM String MENU_TIME2[] = {"Tiempo actual", "", "1.-Cambiar", "0.-Volver"};
-const PROGMEM String MENU_LOCKERS[] = {"1.-Bloqueos activos", String("2.-Contrase") + (char)0xEE + String("a"), "3.-Cables", "4.-Llaves NFC"};
-const PROGMEM String MENU_ACTIVE_LOCKERS[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC", ""};
-const PROGMEM String MENU_PASS[] = {String("Contrase") + (char)0xEE + String("a actual"), "", "1.-Cambiar", "0.-Volver"};
-const PROGMEM String NEW_PASS[] = {"Introduce la nueva", String("contrase") + (char)0xEE + String("a:"), "*Borrar #Confirmar", ""};
-const PROGMEM String MENU_WIRE[] = {"Funcion cable", "1.-C1 =    2.-C2 =  ", "3.-C3 =    4.-C4 =", ""};
-const PROGMEM String FUNCTION_WIRE[] = {"1.-Reducir tiempo", "2.-Parar bomba", "3.-No hacer nada", "4.-Explotar"};
-const PROGMEM String MENU_NFC[] = {"1.-Opciones tarjeta", "2.-Leer tarjeta", "3.-Gravar tarjeta", ""};
-const PROGMEM String MENU_NFC_CONF[] = {"1.-Tipo", "2.-Usos", "3.-Tiempo", ""};
-const PROGMEM String MENU_NFC_TIPO[] = {"1.-Parar Bomba", String("2.-A") + (char)0xEE + String("adir tiempo"), "3.-Restar tiempo", ""};
-const PROGMEM String MENU_NFC_USOS[] = {"Numero de usos", "de 1 a 9, o A para", "infinitos usos", ""};
-const PROGMEM String MENU_OTHER_OPT[] = {"1.-Sonido", "2.-Alarma", "3.-Granada", "4.-Sensor golpes"};
-const PROGMEM String MENU_SHOCK[] = {"1.-Sensor golpes", "2.-Ajuste sensivilid", "Sensivilidad actual:", ""};
-const PROGMEM String MENU_SHOCK2[] = {"1.-Ajuste manual", "2.-Ajuste por golpe", "Sensivilidad actual:", ""};
-const PROGMEM String WAIT_FOR_SHOCK = {"Golpea el dispositivo"};
-const PROGMEM String NFC_CARD_ON_READER = "Ponga la tarjeta NFC sobre el lector...";
-const PROGMEM String WIN_MESSAGE_RED = "    RED TEAM WIN    ";
-const PROGMEM String WIN_MESSAGE_GREEN = "   GREEN TEAM WIN   ";
-const PROGMEM String DRAW = "DRAW";
-const PROGMEM String PRESS_RED_BUTTON = "Pulsa el boton rojo";
-const PROGMEM String PRESS_GREEN_BUTTON = "Pulsa el boton verde";
-const PROGMEM String BOMB_ACTIVE = "BOMBA ARMADA";
-const PROGMEM String BOMB_UNACTIVE = "BOMBA DESARMADA";
-const PROGMEM String INTRO_TIME = "Introduce el tiempo:";
-const PROGMEM String GAME_PASS = "PASS";
-const PROGMEM String GAME_WIRE = "WIRE";
-const PROGMEM String GAME_NFC = "NFC";
-const PROGMEM String GAME_START_IN = "The game starts in";
-const PROGMEM String RED_TEAM = "Red team";
-const PROGMEM String GREEN_TEAM = "Green team";
-const PROGMEM String INTRO2NUM[] = {"Introduce un valor", "de 2 digitos:", "", ""};
+const String MENU_PRINCIPAL[] = { "Menu", "1.-Iniciar juego", "2.-Configuracion", ""};
+const String MENU_JUEGO[] = {"1.-Counterstrike", "2.-Asalto", "3.-Dominacion", "4.-Explosivo"};
+const String MENU_CONF[] = {"1.-Tiempo", "2.-Mecanismo bloqueo", "3.-Otras opciones", "4.-Test"};
+const String MENU_TIME[] = {"1.-Tiempo de juego", "2.-Tiempo bomba", "3.-Tiempo des/armado", "4.-Tiempo inicio"};
+const String MENU_TIME2[] = {"Tiempo actual", "", "1.-Cambiar", "0.-Volver"};
+const String MENU_LOCKERS[] = {"1.-Bloqueos activos", String("2.-Contrase") + (char)0xEE + String("a"), "3.-Cables", "4.-Llaves NFC"};
+const String MENU_ACTIVE_LOCKERS[] = {String("1.-Contrase") + (char)0xEE + String("a"), "2.-Cables", "3.-Llaves NFC", ""};
+const String MENU_PASS[] = {String("Contrase") + (char)0xEE + String("a actual"), "", "1.-Cambiar", "0.-Volver"};
+const String NEW_PASS[] = {"Introduce la nueva", String("contrase") + (char)0xEE + String("a:"), "*Borrar #Confirmar", ""};
+const String MENU_WIRE[] = {"Funcion cable", "1.-C1 =    2.-C2 =  ", "3.-C3 =    4.-C4 =", ""};
+const String FUNCTION_WIRE[] = {"1.-Reducir tiempo", "2.-Parar bomba", "3.-No hacer nada", "4.-Explotar"};
+const String MENU_NFC[] = {"1.-Opciones tarjeta", "2.-Leer tarjeta", "3.-Gravar tarjeta", ""};
+const String MENU_NFC_CONF[] = {"1.-Tipo", "2.-Usos", "3.-Tiempo", ""};
+const String MENU_NFC_TIPO[] = {"1.-Parar Bomba", String("2.-A") + (char)0xEE + String("adir tiempo"), "3.-Restar tiempo", ""};
+const String MENU_NFC_USOS[] = {"Numero de usos", "de 1 a 9, o A para", "infinitos usos", ""};
+const String MENU_OTHER_OPT[] = {"1.-Sonido", "2.-Alarma", "3.-Granada", "4.-Sensor golpes"};
+const String MENU_SHOCK[] = {"1.-Sensor golpes", "2.-Ajuste sensivilid", "Sensivilidad actual:", ""};
+const String MENU_SHOCK2[] = {"1.-Ajuste manual", "2.-Ajuste por golpe", "Sensivilidad actual:", ""};
+const String WAIT_FOR_SHOCK = {"Golpea el dispositivo"};
+const String NFC_CARD_ON_READER = "Ponga la tarjeta NFC sobre el lector...";
+const String WIN_MESSAGE_RED = "    RED TEAM WIN    ";
+const String WIN_MESSAGE_GREEN = "   GREEN TEAM WIN   ";
+const String DRAW = "DRAW";
+const String PRESS_RED_BUTTON = "Pulsa el boton rojo";
+const String PRESS_GREEN_BUTTON = "Pulsa el boton verde";
+const String BOMB_ACTIVE = "BOMBA ARMADA";
+const String BOMB_UNACTIVE = "BOMBA DESARMADA";
+const String INTRO_TIME = "Introduce el tiempo:";
+const String GAME_PASS = "PASS";
+const String GAME_WIRE = "WIRE";
+const String GAME_NFC = "NFC";
+const String GAME_START_IN = "The game starts in";
+const String RED_TEAM = "Red team";
+const String GREEN_TEAM = "Green team";
+const String INTRO2NUM[] = {"Introduce un valor", "de 2 digitos:", "", ""};
 //------------------------------------------------------------------------------------
 
 //-----------------------VARIABLES GLOVALES BOMBA--------------------------------------
@@ -114,8 +114,8 @@ int tWIRE[4] = {2, 3, 3, 3};// efecto cable 1=-10seg 2=pararBomba 3=nada 4= booo
 
 bool bNFC = false; //bloqueo NFC
 
-long RELOJ_JUEGO = 60000;//10 min en centisegundos
-long RELOJ_BOMBA = 30000;//5 min en centisegundos
+unsigned long RELOJ_JUEGO = 60000;//10 min en centisegundos
+unsigned long RELOJ_BOMBA = 30000;//5 min en centisegundos
 int TIME_ARMDES = 10; //tiempo armado/desarmado bomba en segundos
 int INIT_TIME = 10; //tiempo para iniciar juego en segundos
 
@@ -133,6 +133,7 @@ void setup() {
   for (byte i = 0; i < 6; i++) {
     nfcKey.keyByte[i] = 0xFF;
   }
+  pinMode(GRENADEPIN, OUTPUT);
   pinMode(ALARMPIN, OUTPUT);
   pinMode(BUZZPIN, OUTPUT);
   pinMode(WIRE[0], INPUT_PULLUP);
@@ -156,5 +157,6 @@ void loop() {
   setup2();
   menu();
 }
+
 
 

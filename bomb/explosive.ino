@@ -4,7 +4,7 @@
 // activated and movement is excessive pump will explode in 3 seconds.
 
 void explosive() {
-  long reloj = 0;
+  unsigned long reloj = 0;
   String pass = "";
   bool bp = bPASS,
        bw = bWIRE,
@@ -16,7 +16,7 @@ void explosive() {
   drawEmptyProgressBar(3);
   printActiveGames(bp, bw, bk, 0, true);
   int lastPercentage = 0;
-  long game_counter = millis();
+  unsigned long game_counter = millis();
   while (reloj < RELOJ_BOMBA && !win) {
     //if(counter(reloj)){
     if (countMillis(10, game_counter)) {
@@ -55,4 +55,5 @@ void explosive() {
   winMessage(win, 1);
   alarm(true);
 }
+
 

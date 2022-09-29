@@ -19,11 +19,11 @@ void menuJuego() {
     printScreen(MENU_JUEGO);
     drawBomb(17, 0);
     opt = validOption(0, 4);
-    if(opt != 0){
+    if (opt != 0) {
       waitFor(INIT_TIME);
-        alarm(true);
-        delay(1000);
-        alarm(false);
+      alarm(true);
+      delay(1000);
+      alarm(false);
     }
     switch (opt) {
       case 1: //1.-Counterstrike
@@ -39,7 +39,7 @@ void menuJuego() {
         explosive();
         break;
     }
-    if(opt != 0){
+    if (opt != 0) {
       keypad.waitForKey();
       opt = 0;
     }
@@ -318,7 +318,17 @@ void test() {
     check(18, 0, boolRead(WIRE[3]));
     check(3, 1, boolRead(RED_BTN));
     check(8, 1, boolRead(GREEN_BTN));
-    if (key == '#' && n > 1) n--;
+    if(key == 'A'){
+      digitalWrite(ALARMPIN, HIGH);
+      delay(1000);
+      digitalWrite(ALARMPIN, LOW);
+    }
+    else if(key == 'B'){
+      digitalWrite(GRENADEPIN, HIGH);
+      delay(1000);
+      digitalWrite(GRENADEPIN, LOW);
+    }
+    else if (key == '#' && n > 1) n--;
     else if (key == '*' && n <= 7) n++;
     else if (key >= '0' && key <= '9') {
       byte nums[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
@@ -385,20 +395,20 @@ void printData(byte data[]) {
   if (data[1] != 'A') lcd.print(data[1]);
   else lcd.print("A");
   char buffer[20];
-  sprintf(buffer," ; %02d:%02d:%02d:%02d",data[2],data[3],data[4],data[5]);
+  sprintf(buffer, " ; %02d:%02d:%02d:%02d", data[2], data[3], data[4], data[5]);
   lcd.print(buffer);
   /*
-  if (data[2] < 10) lcd.print("0");
-  lcd.print(data[2]);
-  lcd.print(":");
-  if (data[3] < 10) lcd.print("0");
-  lcd.print(data[3]);
-  lcd.print(":");
-  if (data[4] < 10) lcd.print("0");
-  lcd.print(data[4]);
-  lcd.print(":");
-  if (data[5] < 10) lcd.print("0");
-  lcd.print(data[5]);*/
+    if (data[2] < 10) lcd.print("0");
+    lcd.print(data[2]);
+    lcd.print(":");
+    if (data[3] < 10) lcd.print("0");
+    lcd.print(data[3]);
+    lcd.print(":");
+    if (data[4] < 10) lcd.print("0");
+    lcd.print(data[4]);
+    lcd.print(":");
+    if (data[5] < 10) lcd.print("0");
+    lcd.print(data[5]);*/
 }
 
 
@@ -420,7 +430,7 @@ void printScreen(const String m[]) {
   }
 }
 
-void lcdBorraFila(int fila){
+void lcdBorraFila(int fila) {
   lcd.setCursor(0, fila);
   lcd.print("                    ");
 }
@@ -444,7 +454,7 @@ int readSeconds() {
   return s;
 }
 
-long readTime(int t[4]) {
+unsigned long readTime(int t[4]) {
   const byte POINT = B10000000;
   const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
   //long h, m, s, cs;
@@ -466,36 +476,36 @@ long readTime(int t[4]) {
     if (i % 2 == 0) t[(int)i / 2] *= 10;
     else lcd.print(":");
   }
-  long mul_h = 360000,
+  unsigned long mul_h = 360000,
        mul_m = 6000,
        mul_s = 100;
-  long l = (t[0] * mul_h) + (t[1] * mul_m) + (t[2] * mul_s) + t[3];
+  unsigned long l = (t[0] * mul_h) + (t[1] * mul_m) + (t[2] * mul_s) + t[3];
   return l;
 }
 
-void printLong(long t, int col, int fil) {
+void printLong(unsigned long t, int col, int fil) {
   unsigned int h = t / 360000;
   unsigned int m = (t % 360000) / 6000;
   unsigned int s = ((t % 360000) % 6000) / 100;
   unsigned int cs = t % 100;
   lcd.setCursor(col, fil);
-  
+
   char buffer[15];
-  sprintf(buffer,"%02d:%02d:%02d:%02d",h,m,s,cs);
+  sprintf(buffer, "%02d:%02d:%02d:%02d", h, m, s, cs);
   lcd.print(buffer);
-  
+
   /*
-  if (h < 10) lcd.print("0");
-  lcd.print(h);
-  lcd.print(":");
-  if (m < 10) lcd.print("0");
-  lcd.print(m);
-  lcd.print(":");
-  if (s < 10) lcd.print("0");
-  lcd.print(s);
-  lcd.print(":");
-  if (cs < 10) lcd.print("0");
-  lcd.print(cs);*/
+    if (h < 10) lcd.print("0");
+    lcd.print(h);
+    lcd.print(":");
+    if (m < 10) lcd.print("0");
+    lcd.print(m);
+    lcd.print(":");
+    if (s < 10) lcd.print("0");
+    lcd.print(s);
+    lcd.print(":");
+    if (cs < 10) lcd.print("0");
+    lcd.print(cs);*/
 }
 
 void newPass() {
@@ -529,3 +539,4 @@ void check(int col, int fil , bool yesno) {
   lcd.setCursor(col, fil);
   lcd.write((int)yesno);
 }
+

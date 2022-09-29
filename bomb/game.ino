@@ -7,7 +7,7 @@ bool boolRead(int n) {
   else return false;
 }
 
-int calculatePercentage(long passedTime, long maxTime) {
+int calculatePercentage(unsigned long passedTime, unsigned long maxTime) {
   return (int)((passedTime * 100) / maxTime);
 }
 
@@ -15,7 +15,7 @@ int percentageBarPosition(int percentage, int barLength) {
   return (int)((percentage * barLength) / 100);
 }
 
-bool countMillis(int t, long &counted) {
+bool countMillis(int t, unsigned long &counted) {
   if ((millis() - counted) >= t) {
     counted = millis();
     return true;
@@ -53,7 +53,7 @@ bool checkPass(String &p) {
   return false;
 }
 
-bool checkWire(long &reloj, bool cuttedWire[]) {
+bool checkWire(unsigned long &reloj, bool cuttedWire[]) {
   for (int i = 0; i < 4; i++) {
     if (boolRead(WIRE[i]) && !cuttedWire[i]) {
       cuttedWire[i] = true;
@@ -77,7 +77,7 @@ bool checkWire(long &reloj, bool cuttedWire[]) {
   return false;
 }
 
-bool checkNFC(long &reloj) {
+bool checkNFC(unsigned long &reloj) {
   if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
     byte readData[18];
     readNFC(readData);
@@ -90,7 +90,7 @@ bool checkNFC(long &reloj) {
         return true;
       }
       else {
-        long r = readData[2] * 360000 + readData[3] * 6000 + readData[4] * 100 + readData[5];
+        unsigned long r = readData[2] * 360000 + readData[3] * 6000 + readData[4] * 100 + readData[5];
         if (readData[0] == 2) {
           reloj -= r;
           if (reloj > 35999999) reloj = 35999999;
@@ -109,7 +109,7 @@ void waitFor(int s) {
   lcd.clear();
   lcd.setCursor(1, 0);
   lcd.print(GAME_START_IN);
-  long t = millis();
+  unsigned long t = millis();
   if (((int)s / 10) > 0) {
     customNum(((int)s / 10), 7, 1);
     customNum(((int)s % 10), 10, 1);
@@ -135,14 +135,14 @@ void waitFor(int s) {
   lcd.clear();
 }
 
-void showTime( long t) {
+void showTime( unsigned long t) {
   //const byte NUM[] = {B11111110,B10110000,B11101101,B11111001,B10110011,B11011011,B11011111,B11110000,B11111111,B11111011};
   const byte POINT = B10000000;
   const byte NUM[] = {B01111110, B00110000, B01101101, B01111001, B00110011, B01011011, B01011111, B01110000, B01111111, B01111011};
-  long h = t / 360000;
-  long m = ((t / 100) % 3600) / 60;
-  long s = ((t / 100) % 3600) % 60;
-  long cs = t % 100;
+  unsigned long h = t / 360000;
+  unsigned long m = ((t / 100) % 3600) / 60;
+  unsigned long s = ((t / 100) % 3600) % 60;
+  unsigned long cs = t % 100;
 
   ld.write(8, NUM[(int)h / 10] );
   ld.write(7, NUM[(int)h % 10] + (POINT /** (cs / 10 % 2)*/));
@@ -348,10 +348,10 @@ void customNum(int num, int col, int fil) {
   }
 }
 
-long TIME_BUZZING = millis();
+unsigned long TIME_BUZZING = millis();
 void buzzing() {
   if (bBUZZ) {
-    long time = millis();
+    unsigned long time = millis();
     if (time - TIME_BUZZING >= 1000) {
       TIME_BUZZING = time;
       tone(BUZZPIN, 220, 100);
@@ -381,7 +381,7 @@ void winMessage(bool b, int fil) {
 }
 
 int pushedButton_reloj = 0;
-long pushedButton_counter = millis();
+unsigned long pushedButton_counter = millis();
 int pushedButton_lastPercentage = 0;
 bool lastStateButton = false;
 
@@ -414,3 +414,4 @@ bool pushedButton(int button, bool hilow, int fila) {
   }
   return false;
 }
+

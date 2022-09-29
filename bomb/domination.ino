@@ -7,8 +7,8 @@
 // substract time for any team. If you have activated accelerometer and if the movement is excessive,
 // the base switches to neutral automaticly.
 void domination() {
-  long reloj = 0;
-  long points[2] = {0, 0};
+  unsigned long reloj = 0;
+  unsigned long points[2] = {0, 0};
   bool dominator[2] = {false, false};
 
   lcd.setCursor(0, 0);
@@ -20,7 +20,7 @@ void domination() {
 
 
 
-  long game_counter = millis();
+  unsigned long game_counter = millis();
   drawEmptyProgressBar(2);
   int lastPercentage = 0;
   int millisCounter = 0;
@@ -75,3 +75,4 @@ void domination() {
   else winMessage((points[1] > points[0]), 0);
   alarm(true);
 }
+
